@@ -10,15 +10,17 @@ public class Texture : MonoBehaviour
     public Material red; 
     public Transform self;
     public Transform enemy;
-    
+    private int screenWidth;
+    private int screenHeight;    
     private Transform selfChild;
     private Transform enemyChild;
 
     private Roles firstRole;
     private Roles secondRole;
     private void Start() {
-        Debug.Log(Screen.width);
-        Debug.Log(Screen.height);
+        screenWidth = Screen.width;
+        screenHeight = Screen.height;
+
         self = transform.Find("self");
         enemy = transform.Find("enemy");
         firstRole = GameProcess.Instance.role_list[0];
@@ -29,6 +31,7 @@ public class Texture : MonoBehaviour
         foreach(var card in firstRole.card_pack_instance) {
             Renderer childRenderer = firstObjects[temp].GetComponent<Renderer>();
             Transform childCanvas = firstObjects[temp].GetChild(0);
+            AllSetFontsize(childCanvas, screenWidth / 908 * 9);
             Transform[] canvasChild = GetChildObjects(childCanvas);
             Text nameText = canvasChild[0].GetComponent<Text>();
             Text desText = canvasChild[1].GetComponent<Text>();
@@ -51,6 +54,7 @@ public class Texture : MonoBehaviour
         foreach(var card in secondRole.card_pack_instance) {
             Renderer childRenderer = secondObjects[temp].GetComponent<Renderer>();
             Transform childCanvas = secondObjects[temp].GetChild(0);
+            AllSetFontsize(childCanvas, screenWidth / 908 * 9);
             Transform[] canvasChild = GetChildObjects(childCanvas);
             Text nameText = canvasChild[0].GetComponent<Text>();
             Text desText = canvasChild[1].GetComponent<Text>();
@@ -70,8 +74,7 @@ public class Texture : MonoBehaviour
             temp++;
         }        
     }
-    public void addTexture(Cards card) {
-    }
+
     private Transform[] GetChildObjects(Transform parent)
     {
         int childCount = parent.childCount;
@@ -83,6 +86,13 @@ public class Texture : MonoBehaviour
         }
 
         return children;
+    }
+    private void AllSetFontsize(Transform obj, int size) {
+        Transform[] canvasChild = GetChildObjects(obj);
+        for(int i = 0; i < obj.childCount; i++) {
+            Text temp = canvasChild[i].GetComponent<Text>();
+            temp.fontSize = size;
+        }
     }
 }
 

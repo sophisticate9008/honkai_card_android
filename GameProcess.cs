@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 #nullable enable
-public class honkaiCard : MonoBehaviour
-{
-    // ...
-}
-class Hook
+public class Hook
 {
     private string argName;
     private string dependentArgName;
@@ -33,8 +30,9 @@ class Hook
     public float Num { get {return this.num;}}
 }
 
-class Roles
+public class Roles
 {
+
     public bool all_fast_card = true;
     public Dictionary<string, float> temphook = new();
     private Dictionary<string, float> properties = new();
@@ -42,9 +40,10 @@ class Roles
     public List<string> track_list = new();
     public List<string> only_list = new();
     public string role_name;
+    public bool respone_complete;
     public int role_index;
     public bool harm_to_life_next = false;
-    public Process process;
+    public GameProcess process;
     public List<Cards> card_pack_instance_backup = new();
     public Dictionary<string, string> name_args = new()
     {
@@ -58,7 +57,7 @@ class Roles
         { "easy_hurt", "易伤" },
         { "note", "乐符" }
     };  
-    public Roles(string role_name, List<string> card_pack, Process process)
+    public Roles(string role_name, List<string> card_pack, GameProcess process)
     {
         // 在构造函数中初始化属性
         InitializeProperty("life_max", 100000);
@@ -128,8 +127,14 @@ class Roles
 
     public string? role_describe;
 
+    public void turnBegin() {
+        var enemy = this.process.role_list[(this.role_index + 1) % 2];
+        enemy["bleed_harm"] += this["bleed"] * 30;
+        this.UseCard();
+    }
     public void RoleLoad()
     {
+        
         if (this.role_name == "西琳")
         {
             this.role_describe = "西琳:开始获得2层力量,10护盾,使用奇数牌增加1点护盾,偶数牌增加1点生命";
@@ -333,19 +338,13 @@ class Roles
 
     }
 
-    internal void cal_bleed_harm(int v)
-    {
-        throw new NotImplementedException();
-    }
 
-    internal void cal_bleed_harm()
-    {
-        throw new NotImplementedException();
-    }
+
+
 }
 
 
-class Cards
+public class Cards
 {
     public int index = 0;
     public bool fast_card = false;
@@ -353,7 +352,7 @@ class Cards
     public bool odd = false;
     public bool even = false;
     public int mana = 0;
-    private string? color;
+    public string? color;
     public string? describe;
     public string card_name;
     public int level;
@@ -698,7 +697,7 @@ class Cards
                 var enemy = role.process.role_list[(role.role_index + 1) % 2];
                 role["attack_count"] += 1;
                 role["attack"] += 20 + level * 10;
-                role.cal_bleed_harm((int)(enemy["life_max"] - enemy["life_now"]));
+                role["bleed_harm"] += (int)(enemy["life_max"] - enemy["life_now"]);
             };
             this.use = use;  
         }
@@ -752,7 +751,7 @@ class Cards
             this.describe = $"流血对敌方造成伤害时,回复伤害值{10 * level + 15 + (level == 3 ? 5 : 0)}%的生命";
             this.broken = true;
             Action use = () => {
-                new Hook("bleed_harm", "life_recover", (10 * level + 15 + (level == 3 ? 5 : 0)) / 30, "+", role);
+                new Hook("bleed_harm", "life_recover", (10 * level + 15 + (level == 3 ? 5 : 0)) / 100 / 30, "+", role);
                 
             };
             this.use = use;  
@@ -764,7 +763,7 @@ class Cards
             Action use = () => {
                 for (int i = 0; i < 1 + level; i++)
                 {
-                    role.cal_bleed_harm();
+                    role["bleed_harm"] += role["bleed"];
                 }
             };
             this.use = use;  
@@ -813,7 +812,7 @@ class Cards
             this.broken = true;
             Action use = () => {
                 role["heal"] += level;
-                new Hook("life_max", "harm", 1, "-", role);
+                new Hook("life_max", "harm", 1, "+", role);
             };
             this.use = use;  
         }
@@ -991,8 +990,9 @@ class Cards
 }
 
 
-class Process
+public class GameProcess : MonoBehaviour
 {
+    
     public static List<string> starAndLuck = new()
     {
         "垒之护", "绚烂.星霞", "跃增.运时", "矛之突", "灼灼.星熠", "复加.得时", "幸运一掷", "时来运转", "好运加护",
@@ -1017,25 +1017,62 @@ class Process
     };
     public List<Roles> role_list = new();
     public System.Random random = new();
+    private static GameProcess instance;
 
-    public List<string> card_pack1 = ChooseRandomElements(starAndLuck, 8);
-    public List<string> card_pack2 = ChooseRandomElements(starAndLuck, 8);
-    public Process(string role1_name,  string role2_name) {
+    
+    public static GameProcess? Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                Debug.LogError("Singleton instance has not been initialized.");
+            }
+            return instance;
+        }
+    }
+
+    public List<string> card_pack1;
+    public List<string> card_pack2;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // 保持单例在场景切换时不被销毁
+            InitializeSingleton();
+        }
+        else
+        {
+            Destroy(gameObject); // 如果已经存在其他实例，销毁这个
+        }
+    }
+
+    private void InitializeSingleton()
+    {
+        // 单例初始化的逻辑，包括创建 card_pack1 和 card_pack2
+        card_pack1 = ChooseRandomElements(starAndLuck, 8);
+        card_pack2 = ChooseRandomElements(starAndLuck, 8);
+
+        // 创建 Roles 实例
         List<string> modifiedCardPack1 = card_pack1.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
         List<string> modifiedCardPack2 = card_pack2.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
-        new Roles(role1_name, modifiedCardPack1, this);
-        new Roles(role2_name, modifiedCardPack2, this);    
+        Roles role1 = new Roles("Role1Name", modifiedCardPack1, this);
+        Roles role2 = new Roles("Role2Name", modifiedCardPack2, this);
+        role1.RoleLoad();
+        role2.RoleLoad();
     }
-    public static List<T> ChooseRandomElements<T>(List<T> objects, int k)
+
+    private List<T> ChooseRandomElements<T>(List<T> objects, int k)
     {
-        List<T> result = new List<T>();
-        System.Random random = new System.Random();
+        List<T> result = new();
+        System.Random random = new();
 
         if (k > objects.Count)
         {
             k = objects.Count;
         }
-
         for (int i = 0; i < k; i++)
         {
             int randomIndex = random.Next(0, objects.Count);

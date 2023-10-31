@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 #nullable enable
 public class Hook
 {
@@ -90,6 +91,7 @@ public class Roles
         InitializeProperty("harm_to_life", 0);
         InitializeProperty("turn_count", 0);
         InitializeProperty("harm", 0);
+        InitializeProperty("heal_beilv", 1);
         InitializeProperty("bleed_harm", 0);
         InitializeProperty("bleed_to_life", 0);
         InitializeProperty("bleed_harm_to_life", 0);
@@ -101,11 +103,11 @@ public class Roles
         process.role_list.Add(this);
         if (process.role_list.Count == 1)
         {
-            this.role_index = 0;
+            this.role_index = 1;
         }
         else
         {
-            this.role_index = 1;
+            this.role_index = 0;
         }
 
         // 卡组
@@ -127,7 +129,7 @@ public class Roles
 
     public string? role_describe;
 
-    public void turnBegin() {
+    public void TurnBegin() {
         var enemy = this.process.role_list[(this.role_index + 1) % 2];
         enemy["bleed_harm"] += this["bleed"] * 30;
         this["life_recover"] += this["heal"];
@@ -160,8 +162,8 @@ public class Roles
         if (this.role_name == "芙乐艾")
         {
             this.role_describe = "芙乐艾:开始获得2层法力并为敌方施加1层虚弱,2层流血";
-            this.process.role_list[(int)(this["role_index"] + 1) % 2]["weak"] += 1;
-            this.process.role_list[(int)(this["role_index"] + 1) % 2]["bleed"] += 2;
+            this.process.role_list[(int)(this.role_index + 1) % 2]["weak"] += 1;
+            this.process.role_list[(int)(this.role_index + 1) % 2]["bleed"] += 2;
             this["mana"] += 2;
         }
         if (this.role_name == "布洛洛")
@@ -222,7 +224,7 @@ public class Roles
             if (card_use.broken)
             {
                 this.card_pack_instance.Remove(card_use);
-                this["card_use_index"] = (this["card_use_index"] + 1) % this.card_pack_instance.Count;
+                this["card_use_index"] = this["card_use_index"] % this.card_pack_instance.Count;
             }
             else
             {
@@ -366,6 +368,7 @@ public class Cards
     private Action? use;
     public void Use()
     {
+
         // Call the bound "use" function
         use?.Invoke();
     }
@@ -381,6 +384,7 @@ public class Cards
             this.describe = $"护盾+{25 + 25 * level},获得99层壁垒";
             Action use = () =>
             {
+                Debug.Log("垒之护");
                 role["rampart"] += 99;
                 role["shield"] += (25 + 25 * level) * 30;
             };
@@ -416,6 +420,7 @@ public class Cards
             Action use = () => {
                 role["shield"] += (5 + 5 * level) * 30;
                 float shield_num = role["shield"];
+                role["harm"] += shield_num * (2 + level);
                 role["shield"] = 0;
                 role["attack_count"] += 1;
             };
@@ -481,6 +486,7 @@ public class Cards
         }
         if (card_name == "魔阵.星数") {
             this.color = color;
+            this.broken = true;
             if (level == 2)
             {
                 this.describe = "获得1层力量,奇数-魔阵:每回合获得一层力量";

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class StateTrack : MonoBehaviour {
@@ -20,6 +21,7 @@ public class StateTrack : MonoBehaviour {
         
     }
     private void LifeRecover() {
+
         foreach(var role in roleList) {
             if(role["life_recover"] > 0) {
                 role["life_change"] += 1;
@@ -36,7 +38,7 @@ public class StateTrack : MonoBehaviour {
             if(!enemy.harm_to_life_next && enemy["harm_to_life"] > 0) {
                 enemy["life_recover"] += role["harm"] / 30;               
             }else {
-                enemy["life_now"] -= (role["harm"] - enemy["shield"]) <= role["harm"] ? 0 : (role["harm"] - enemy["shield"]);
+                enemy["life_now"] -= enemy["shield"] >= role["harm"] ? 0 : (role["harm"] - enemy["shield"]);
                 enemy["shield"] -= role["harm"] <= enemy["shield"] ? role["harm"] : enemy["shield"];
                 enemy["life_now"] = (float)Math.Round(enemy["life_now"]);
             }
@@ -82,6 +84,7 @@ public class StateTrack : MonoBehaviour {
                 if (role["weak"] > 0)
                 {
                     role["harm"] *= 0.6f;
+                    
                 }
                 if (enemy["easy_hurt"] > 0)
                 {

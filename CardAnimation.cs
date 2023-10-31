@@ -7,7 +7,7 @@ public class CardAnimation : MonoBehaviour
     public float upDistance = 10.0f;
     public float downDistance = 10.0f; // 新增：下降距离
     public float animationSpeed = 5.0f;
-    private bool isAnimating = false;
+    public bool isAnimating = false;
     private Vector2 targetPosition;
 
     private void Start()

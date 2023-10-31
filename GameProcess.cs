@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -33,7 +34,7 @@ public class Hook
 public class Roles
 {
 
-    public bool all_fast_card = true;
+    public bool all_fast_card = false;
     public Dictionary<string, float> temphook = new();
     private Dictionary<string, float> properties = new();
     public List<Cards> card_pack_instance = new();
@@ -59,6 +60,7 @@ public class Roles
     };  
     public Roles(string role_name, List<string> card_pack, GameProcess process)
     {
+        InitializeProperty("coin_", 0);
         // 在构造函数中初始化属性
         InitializeProperty("life_max", 100000);
         InitializeProperty("life_now", 100000);
@@ -82,7 +84,6 @@ public class Roles
         InitializeProperty("card_even", 0);
         InitializeProperty("card_accumulate", 0);
         InitializeProperty("card_use_count", 0);
-        InitializeProperty("coin_", 0);
         InitializeProperty("attack_count", 0);
         InitializeProperty("card_use_index", 0);
         InitializeProperty("fast_card_limit", 0);
@@ -91,7 +92,6 @@ public class Roles
         InitializeProperty("harm", 0);
         InitializeProperty("bleed_harm", 0);
         InitializeProperty("bleed_to_life", 0);
-        InitializeProperty("heal_", 0);
         InitializeProperty("bleed_harm_to_life", 0);
         InitializeProperty("push_bleed", 0);
         InitializeProperty("recover_count", 0);
@@ -130,7 +130,12 @@ public class Roles
     public void turnBegin() {
         var enemy = this.process.role_list[(this.role_index + 1) % 2];
         enemy["bleed_harm"] += this["bleed"] * 30;
-        this.UseCard();
+        this["life_recover"] += this["heal"];
+        this["turn_count"] += 1;
+    }
+    public void turnEnd() {
+        this["weak"] = Math.Max(0, this["weak"] - 1);
+        this["easy_hurt"] = Math.Max(0, this["easy_hurt"] - 1);
     }
     public void RoleLoad()
     {
@@ -192,7 +197,7 @@ public class Roles
         var card_use = this.card_pack_instance[(int)this["card_use_index"]];
         if (this["mana"] >= card_use.mana)
         {
-            Console.WriteLine(card_use.describe);
+            UnityEngine.Debug.Log(card_use.describe);
             this["mana"] -= card_use.mana;
             this["card_use_count"]++;
             for (int i = 0; i < this["effect_count_next"]; i++)
@@ -244,6 +249,7 @@ public class Roles
     public void InitializeProperty(string propName, int value)
     {
         properties[propName] = value;
+        temphook[propName] = value;
     }
 
     public float this[string propName]
@@ -1026,7 +1032,7 @@ public class GameProcess : MonoBehaviour
         {
             if (instance == null)
             {
-                Debug.LogError("Singleton instance has not been initialized.");
+                UnityEngine.Debug.Log("Singleton instance has not been initialized.");
             }
             return instance;
         }

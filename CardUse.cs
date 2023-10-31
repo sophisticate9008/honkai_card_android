@@ -1,23 +1,56 @@
 
+using System;
 using UnityEngine;
 
 public class CardUse : MonoBehaviour {
-    public Roles firstRole = GameProcess.Instance.role_list[0];
-    public Roles secondRole = GameProcess.Instance.role_list[1];
-    public GameObject foundObject;
+    private Roles firstRole;
+    private Roles secondRole;
+    private GameObject foundObject;
     private CardAnimation targetScript;
-    private int only = 0;
+    private int roleSel = 0;
+    private int roleSelNow = 0;
+    
     private void Start() {
-        foundObject = GameObject.Find("card_self_00");
-        
+        firstRole = GameProcess.Instance.role_list[0];
+        secondRole = GameProcess.Instance.role_list[1];
     }
     
-    private void Update() {
-        if(foundObject != null && only == 0) {
-            targetScript = foundObject.GetComponent<CardAnimation>();
-            targetScript.StartAnimation();     
-            only++;
-        }
+        private void Update() {
+            if(roleSel % 2 == 0 && roleSelNow == roleSel) {
+                roleSelNow++;
+                firstRole.turnBegin();
+                Cards cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
+                firstRole.UseCard();
+                foundObject = GameObject.Find($"card_self_0{cardNow.index}");
+                targetScript = foundObject.GetComponent<CardAnimation>();
+                if(!targetScript.isAnimating) {
+                    targetScript.StartAnimation();
+                }
+                Invoke("ChangeVariable", 2.0f);
 
+            }else if(roleSel % 2 == 1 && roleSelNow == roleSel) {
+                roleSelNow++;
+                Cards cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
+                secondRole.UseCard();
+                foundObject = GameObject.Find($"card_enemy_0{cardNow.index}");
+                targetScript = foundObject.GetComponent<CardAnimation>();
+                if(!targetScript.isAnimating) {
+                    targetScript.StartDescentAnimation();    
+                }
+                
+                Invoke("ChangeVariable", 2.0f);
+            }
+        }
+    private void ChangeVariable()
+    {
+        if(roleSel % 2 == 0) {
+            firstRole.turnEnd();
+        }
+        else {
+            secondRole.turnEnd();
+        }
+        roleSel++;
+        
+         // 变量在此处发生变化
     }
 }

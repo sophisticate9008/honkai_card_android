@@ -47,7 +47,7 @@ public class Roles
     public bool harm_to_life_next = false;
     public GameProcess process;
     public List<Cards> card_pack_instance_backup = new();
-    public Dictionary<string, string> name_args = new()
+    public static Dictionary<string, string> name_args = new()
     {
         { "shield", "护盾" },
         { "power", "力量" },
@@ -131,6 +131,10 @@ public class Roles
 
     public void TurnBegin() {
         var enemy = this.process.role_list[(this.role_index + 1) % 2];
+        if (this["rampart"] <= 0 && this["turn_count"] != 1)
+        {
+            this["shield"] = (int)this["shield"] / 2;
+        }
         enemy["bleed_harm"] += this["bleed"] * 30;
         this["life_recover"] += this["heal"];
         this["turn_count"] += 1;

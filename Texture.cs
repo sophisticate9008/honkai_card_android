@@ -8,8 +8,8 @@ public class Texture : MonoBehaviour
     public Material purple; // 不需要在Inspector面板中分配Material1的初始值
     public Material gold; // 不需要在Inspector面板中分配Material2的初始值
     public Material red; 
-    public Transform self;
-    private Dictionary<string, string> colorMap = new()
+    private Transform self;
+    public static Dictionary<string, string> colorMap = new()
     {
         { "迅捷", "#55D1A7" },
         { "法力", "#499ACD" },
@@ -24,18 +24,14 @@ public class Texture : MonoBehaviour
         { "易伤", "#A774AC" },
         { "乐符", "#A1BEDC" }
     };
-    public Transform enemy;
+    private Transform enemy;
     private int screenWidth;
     private int screenHeight;    
-    private Transform selfChild;
-    private Transform enemyChild;
-
     private Roles firstRole;
     private Roles secondRole;
     private void Start() {
         screenWidth = Screen.width;
         screenHeight = Screen.height;
-
         self = transform.Find("self");
         enemy = transform.Find("enemy");
         firstRole = GameProcess.Instance.role_list[0];
@@ -109,7 +105,7 @@ public class Texture : MonoBehaviour
             temp.fontSize = size;
         }
     }
-    public string ColorizeText(string inputText)
+    public static string ColorizeText(string inputText)
     {
         string result = inputText;
 

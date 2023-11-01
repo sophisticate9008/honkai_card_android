@@ -24,6 +24,6 @@ public class HealthBarText : MonoBehaviour
     {
         maxHealth = roleList[sel]["life_max"];
         currentHealth = roleList[sel]["life_now"];
-        healthText.text = currentHealth.ToString() + "/" + maxHealth.ToString();
+        healthText.text = ((long)currentHealth).ToString() + "/" + ((long)maxHealth).ToString();
     }
 }

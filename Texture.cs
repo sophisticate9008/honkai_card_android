@@ -9,6 +9,21 @@ public class Texture : MonoBehaviour
     public Material gold; // 不需要在Inspector面板中分配Material2的初始值
     public Material red; 
     public Transform self;
+    private Dictionary<string, string> colorMap = new()
+    {
+        { "迅捷", "#55D1A7" },
+        { "法力", "#499ACD" },
+        { "魔阵", "#A855F1" },
+        { "唯一", "#252C81" },
+        { "流血", "#B3082F" },
+        { "护盾", "#A74722" },
+        { "力量", "#B2381E" },
+        { "自愈", "#458F31" },
+        { "幸运币", "#EEB34D" },
+        { "虚弱", "#2E503F" },
+        { "易伤", "#A774AC" },
+        { "乐符", "#A1BEDC" }
+    };
     public Transform enemy;
     private int screenWidth;
     private int screenHeight;    
@@ -38,7 +53,7 @@ public class Texture : MonoBehaviour
             Text manaText = canvasChild[2].GetComponent<Text>();
             Text starText = canvasChild[3].GetComponent<Text>();
             nameText.text = card.card_name;
-            desText.text = card.describe;
+            desText.text = ColorizeText(card.describe);
             manaText.text = card.mana.ToString();
             starText.text = new string('★', card.level);
             if(card.color == "红") {
@@ -61,7 +76,7 @@ public class Texture : MonoBehaviour
             Text manaText = canvasChild[2].GetComponent<Text>();
             Text starText = canvasChild[3].GetComponent<Text>();
             nameText.text = card.card_name;
-            desText.text = card.describe;
+            desText.text = ColorizeText(card.describe);
             manaText.text = card.mana.ToString();
             starText.text = new string('★', card.level);
             if(card.color == "红") {
@@ -93,6 +108,17 @@ public class Texture : MonoBehaviour
             Text temp = canvasChild[i].GetComponent<Text>();
             temp.fontSize = size;
         }
+    }
+    public string ColorizeText(string inputText)
+    {
+        string result = inputText;
+
+        foreach (var kvp in colorMap)
+        {
+            result = result.Replace(kvp.Key, $"<color={kvp.Value}><b>{kvp.Key}</b></color>");
+        }
+
+        return result;
     }
 }
 

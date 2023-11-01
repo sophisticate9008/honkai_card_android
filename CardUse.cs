@@ -32,7 +32,7 @@ public class CardUse : MonoBehaviour {
                 }
                 if(cardNow.broken) {
                     childRenderer = foundObject.GetComponent<Renderer>();
-                    Invoke("ChangeMaterial", 1.1f);                    
+                    Invoke("ChangeMaterial", 1.0f);                    
                 }
                 Invoke("ChangeVariable", 1.0f);
 
@@ -47,7 +47,7 @@ public class CardUse : MonoBehaviour {
                 }
                 if(cardNow.broken) {
                     childRenderer = foundObject.GetComponent<Renderer>();
-                    Invoke("ChangeMaterial", 1.1f);                  
+                    Invoke("ChangeMaterial", 1.0f);                  
                 }                
                 Invoke("ChangeVariable", 1.0f);
             }

@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 public class StateTrack : MonoBehaviour {
-
+    private bool isRunning = false;
     private Roles firstRole;
     private Roles secondRole;
     private Roles[] roleList = new Roles[2]; 
@@ -13,12 +14,37 @@ public class StateTrack : MonoBehaviour {
         roleList[0] = firstRole;
         roleList[1] = secondRole;
     }
-    private void Update() {
-        CalHarm();
-        LifeRecover();
-        HarmSettlement();
-        BleedHarmSettlement();
-        
+    
+
+    private void Update()
+    {
+        if (!isRunning)
+        {
+            Thread thread = new Thread(RunParallelFunctions);
+            thread.Start();
+        }
+    }
+
+    private void RunParallelFunctions()
+    {
+        isRunning = true;
+
+        Thread calHarmThread = new Thread(CalHarm);
+        Thread lifeRecoverThread = new Thread(LifeRecover);
+        Thread harmSettlementThread = new Thread(HarmSettlement);
+        Thread bleedHarmSettlementThread = new Thread(BleedHarmSettlement);
+
+        calHarmThread.Start();
+        lifeRecoverThread.Start();
+        harmSettlementThread.Start();
+        bleedHarmSettlementThread.Start();
+
+        calHarmThread.Join();
+        lifeRecoverThread.Join();
+        harmSettlementThread.Join();
+        bleedHarmSettlementThread.Join();
+
+        isRunning = false;
     }
     private void LifeRecover() {
 

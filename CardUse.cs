@@ -1,10 +1,13 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardUse : MonoBehaviour {
     private Roles firstRole;
     private Roles secondRole;
+    public Text state1;
+    public Text state2;
     private GameObject foundObject;
     private CardAnimation targetScript;
     private int roleSel = 0;
@@ -34,6 +37,7 @@ public class CardUse : MonoBehaviour {
                     childRenderer = foundObject.GetComponent<Renderer>();
                     Invoke("ChangeMaterial", 1.0f);                    
                 }
+                ShowStates();
                 Invoke("ChangeVariable", 1.0f);
 
             }else if(roleSel % 2 == 1 && roleSelNow == roleSel) {
@@ -48,7 +52,8 @@ public class CardUse : MonoBehaviour {
                 if(cardNow.broken) {
                     childRenderer = foundObject.GetComponent<Renderer>();
                     Invoke("ChangeMaterial", 1.0f);                  
-                }                
+                }
+                ShowStates();             
                 Invoke("ChangeVariable", 1.0f);
             }
 
@@ -57,9 +62,11 @@ public class CardUse : MonoBehaviour {
     {
         if(roleSel % 2 == 0) {
             firstRole.turnEnd();
+            ShowStates();
         }
         else {
             secondRole.turnEnd();
+            ShowStates();
         }
         roleSel++;
         
@@ -74,4 +81,20 @@ public class CardUse : MonoBehaviour {
             childRenderer.material = purple;
         }   
     }
+    private void ShowStates() {
+        string stateOutput = "";
+        foreach(var kvp in Roles.name_args) {
+            if(firstRole[$"{kvp.Key}"] > 0) {
+                stateOutput += $"{kvp.Value}:{(int)firstRole[kvp.Key]}";
+            }
+        }
+        state1.text = Texture.ColorizeText(stateOutput);
+        stateOutput = "";
+        foreach(var kvp in Roles.name_args) {
+            if(secondRole[$"{kvp.Key}"] > 0) {
+                stateOutput += $"{kvp.Value}:{(int)secondRole[kvp.Key]}";
+            }
+        }
+        state2.text = Texture.ColorizeText(stateOutput);    
+    }    
 }

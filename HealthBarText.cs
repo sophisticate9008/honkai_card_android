@@ -23,19 +23,20 @@ public class HealthBarText : MonoBehaviour
     }
     private void Update()
     {
-        ShowStates();
+
         maxHealth = roleList[sel]["life_max"];
         currentHealth = roleList[sel]["life_now"];
         healthText.text = ((long)currentHealth).ToString() + "/" + ((long)maxHealth).ToString();
     }
-    private void ShowStates() {
-        string stateOutput = "";
-        foreach(var kvp in Roles.name_args) {
-            if(roleList[sel][$"{kvp.Key}"] > 0) {
-                stateOutput += $"{kvp.Value}:{(int)roleList[sel][kvp.Key]}";
-            }
-        }
-        state.text = Texture.ColorizeText(stateOutput);
+    // private void ShowStates() {
+    //     string stateOutput = "";
+
+    //     foreach(var kvp in Roles.name_args) {
+    //         if(roleList[sel][$"{kvp.Key}"] > 0) {
+    //             stateOutput += $"{kvp.Value}:{(int)roleList[sel][kvp.Key]}";
+    //         }
+    //     }
+    //     state.text = Texture.ColorizeText(stateOutput);
     
-    }
+    // }
 }

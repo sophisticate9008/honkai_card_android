@@ -116,8 +116,7 @@ public class StateTrack : MonoBehaviour
             for(int i = 0; i < bleed_count; i++) {
                 if(bleed_harm / bleed_count > 1) {
                     ShowScrollingText(role, bleed_harm / bleed_count, "red");
-                }
-                
+                }    
             }
         }
         yield return null;
@@ -145,12 +144,17 @@ public class StateTrack : MonoBehaviour
                 float harm = role["harm"];
                 float attack_count = role["attack_count"];
                 role["attack_count"] = 0;
-                for(int i = 0; i < attack_count; i++) {
-                    if (harm / attack_count > 1) {
-                        ShowScrollingText(role, harm / attack_count, "red");
-                    }
-                    
+                if(harm > 0 && attack_count == 0) {
+                    ShowScrollingText(role, harm, "red");
+                }else {
+                    for(int i = 0; i < attack_count; i++) {
+                        if (harm / attack_count > 1) {
+                            ShowScrollingText(role, harm / attack_count, "red");
+                        }
+                        
+                    }                    
                 }
+
             }
         }
         yield return null;

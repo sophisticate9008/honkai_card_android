@@ -22,12 +22,17 @@ public class ScrollingText : MonoBehaviour
     }
     private void Update()
     {
-        
+        int colorChange = 1;
+        int upBeilv = 1;
+        if(textQueue.Count != 1) {
+            colorChange = 12;
+            upBeilv = 3;
+        }
         // 移动和淡出现有文本
         foreach (Text text in textQueue)
         {
-            text.rectTransform.anchoredPosition += Vector2.up * scrollSpeed * Time.deltaTime * 2;
-            text.color -= new Color(0, 0, 0, 6) * Time.deltaTime;
+            text.rectTransform.anchoredPosition += Vector2.up * scrollSpeed * Time.deltaTime * upBeilv;
+            text.color -= new Color(0, 0, 0, colorChange) * Time.deltaTime;
             
             if(Time.time - lastTime > CD) {
                 lastTime = Time.time;

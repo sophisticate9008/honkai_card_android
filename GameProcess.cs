@@ -388,7 +388,6 @@ public class Cards
             this.describe = $"护盾+{25 + 25 * level},获得99层壁垒";
             Action use = () =>
             {
-                Debug.Log("垒之护");
                 role["rampart"] += 99;
                 role["shield"] += (25 + 25 * level) * 30;
             };

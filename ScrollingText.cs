@@ -10,10 +10,15 @@ public class ScrollingText : MonoBehaviour
     private Transform textContainer;
     public float scrollSpeed = 50f;
 
+    public float CD = 0.05f;
+    private float lastTime = 0.0f;
+    
+
     private Queue<Text> textQueue = new Queue<Text>();
     private void Start() {
         textPrefab = GetComponent<Text>();
         textContainer = transform.parent;
+
     }
     private void Update()
     {
@@ -21,8 +26,15 @@ public class ScrollingText : MonoBehaviour
         // 移动和淡出现有文本
         foreach (Text text in textQueue)
         {
-            text.rectTransform.anchoredPosition += Vector2.up * scrollSpeed * Time.deltaTime;
-            text.color -= new Color(0, 0, 0, 1) * Time.deltaTime;
+            text.rectTransform.anchoredPosition += Vector2.up * scrollSpeed * Time.deltaTime * 2;
+            text.color -= new Color(0, 0, 0, 6) * Time.deltaTime;
+            
+            if(Time.time - lastTime > CD) {
+                lastTime = Time.time;
+            }else {
+                break;
+            }
+            
         }
 
         // 删除已经淡出的文本

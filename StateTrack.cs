@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StateTrack : MonoBehaviour
 {
@@ -14,7 +15,8 @@ public class StateTrack : MonoBehaviour
     private Roles firstRole;
     private Roles secondRole;
     private Roles[] roleList = new Roles[2];
-
+    public Text desL;
+    public Text desR;
     private void Start()
     {
         firstRole = GameProcess.Instance.role_list[0];
@@ -23,6 +25,8 @@ public class StateTrack : MonoBehaviour
         roleList[1] = secondRole;
         scrollingText1 = scrollTextObj1.GetComponent<ScrollingText>();
         scrollingText2 = scrollTextObj2.GetComponent<ScrollingText>();
+        desL.text = Texture.ColorizeText(firstRole.role_describe);
+        desR.text = Texture.ColorizeText(secondRole.role_describe);
     }
 
     private void Update()

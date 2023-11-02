@@ -126,7 +126,7 @@ public class Roles
     public List<string> onlyList = new();
     public bool no_limit = false;
 
-    public string? role_describe;
+    public string role_describe = "";
 
     public void TurnBegin() {
         var enemy = this.process.role_list[(this.role_index + 1) % 2];
@@ -1075,8 +1075,8 @@ public class GameProcess : MonoBehaviour
         // 创建 Roles 实例
         List<string> modifiedCardPack1 = card_pack1.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
         List<string> modifiedCardPack2 = card_pack2.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
-        Roles role1 = new Roles("Role1Name", modifiedCardPack1, this);
-        Roles role2 = new Roles("Role2Name", modifiedCardPack2, this);
+        Roles role1 = new Roles("西琳", modifiedCardPack1, this);
+        Roles role2 = new Roles("特丽丽", modifiedCardPack2, this);
         role1.RoleLoad();
         role2.RoleLoad();
     }

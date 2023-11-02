@@ -36,6 +36,7 @@ public class Texture : MonoBehaviour
         enemy = transform.Find("enemy");
         firstRole = GameProcess.Instance.role_list[0];
         secondRole = GameProcess.Instance.role_list[1];
+
         Transform[] firstObjects = GetChildObjects(self);
         Transform[] secondObjects = GetChildObjects(enemy);
         int temp = 0;

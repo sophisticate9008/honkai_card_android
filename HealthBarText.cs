@@ -9,6 +9,7 @@ public class HealthBarText : MonoBehaviour
     public Text state;
     private Roles firstRole;
     private Roles secondRole;
+
     private List<Roles> roleList = new();
     public int sel = 0;
 
@@ -19,7 +20,9 @@ public class HealthBarText : MonoBehaviour
         firstRole = GameProcess.Instance.role_list[0];
         secondRole = GameProcess.Instance.role_list[1];    
         roleList.Add(firstRole);
-        roleList.Add(secondRole);              
+        roleList.Add(secondRole); 
+
+
     }
     private void Update()
     {
@@ -28,15 +31,5 @@ public class HealthBarText : MonoBehaviour
         currentHealth = roleList[sel]["life_now"];
         healthText.text = ((long)currentHealth).ToString() + "/" + ((long)maxHealth).ToString();
     }
-    // private void ShowStates() {
-    //     string stateOutput = "";
 
-    //     foreach(var kvp in Roles.name_args) {
-    //         if(roleList[sel][$"{kvp.Key}"] > 0) {
-    //             stateOutput += $"{kvp.Value}:{(int)roleList[sel][kvp.Key]}";
-    //         }
-    //     }
-    //     state.text = Texture.ColorizeText(stateOutput);
-    
-    // }
 }

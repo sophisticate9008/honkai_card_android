@@ -94,8 +94,7 @@ public class Roles
         InitializeProperty("heal_beilv", 1);
         InitializeProperty("bleed_harm", 0);
         InitializeProperty("bleed_to_life", 0);
-        InitializeProperty("bleed_harm_to_life", 0);
-        InitializeProperty("push_bleed", 0);
+        InitializeProperty("bleed_count", 0);
         InitializeProperty("recover_count", 0);
         InitializeProperty("life_change", 0);
         this.role_name = role_name;
@@ -103,11 +102,11 @@ public class Roles
         process.role_list.Add(this);
         if (process.role_list.Count == 1)
         {
-            this.role_index = 1;
+            this.role_index = 0;
         }
         else
         {
-            this.role_index = 0;
+            this.role_index = 1;
         }
 
         // 卡组
@@ -136,6 +135,7 @@ public class Roles
             this["shield"] = this["shield"] / 2;
         }
         enemy["bleed_harm"] += this["bleed"] * 30;
+        enemy["bleed_count"] += 1;
         this["life_recover"] += this["heal"];
         this["turn_count"] += 1;
     }
@@ -203,7 +203,7 @@ public class Roles
         var card_use = this.card_pack_instance[(int)this["card_use_index"]];
         if (this["mana"] >= card_use.mana)
         {
-            UnityEngine.Debug.Log(card_use.describe);
+
             this["mana"] -= card_use.mana;
             this["card_use_count"]++;
             for (int i = 0; i < this["effect_count_next"]; i++)
@@ -781,6 +781,7 @@ public class Cards
                 {
                     role["bleed_harm"] += role["bleed"];
                 }
+                role["bleed_count"] += 1;
             };
             this.use = use;  
         }

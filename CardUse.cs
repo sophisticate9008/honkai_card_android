@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class CardUse : MonoBehaviour {
+
     private Roles firstRole;
     private Roles secondRole;
     public Text state1;
@@ -17,9 +18,11 @@ public class CardUse : MonoBehaviour {
     public Material red;    
     private  Cards cardNow;
     private Renderer childRenderer; 
+
     private void Start() {
         firstRole = GameProcess.Instance.role_list[0];
         secondRole = GameProcess.Instance.role_list[1];
+
     }
     
         private void Update() {
@@ -97,5 +100,6 @@ public class CardUse : MonoBehaviour {
             }
         }
         state2.text = Texture.ColorizeText(stateOutput);    
-    }    
+    }
+
 }

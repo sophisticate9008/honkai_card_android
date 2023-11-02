@@ -42,6 +42,7 @@ public class CardUse : MonoBehaviour {
 
             }else if(roleSel % 2 == 1 && roleSelNow == roleSel) {
                 roleSelNow++;
+                secondRole.TurnBegin();
                 cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
                 secondRole.UseCard();
                 foundObject = GameObject.Find($"card_enemy_0{cardNow.index}");

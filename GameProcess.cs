@@ -131,9 +131,9 @@ public class Roles
 
     public void TurnBegin() {
         var enemy = this.process.role_list[(this.role_index + 1) % 2];
-        if (this["rampart"] <= 0 && this["turn_count"] != 1)
+        if (this["rampart"] <= 1 && this["turn_count"] != 1)
         {
-            this["shield"] = (int)this["shield"] / 2;
+            this["shield"] = this["shield"] / 2;
         }
         enemy["bleed_harm"] += this["bleed"] * 30;
         this["life_recover"] += this["heal"];

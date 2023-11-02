@@ -92,6 +92,9 @@ public class StateTrack : MonoBehaviour
         foreach (var role in roleList)
         {
             var enemy = role.process.role_list[(role.role_index + 1) % 2];
+            float bleed_count = role["bleed_count"];
+            float bleed_harm = role["bleed_harm"];
+
             if (!enemy.harm_to_life_next && enemy["harm_to_life"] > 0)
             {
                 enemy["life_recover"] += role["bleed_harm"] / 30;
@@ -105,6 +108,13 @@ public class StateTrack : MonoBehaviour
                 enemy["life_change"] += 1;
             }
             role["bleed_harm"] = 0;
+            role["bleed_count"] = 0;
+            for(int i = 0; i < bleed_count; i++) {
+                if(bleed_harm / bleed_count > 1) {
+                    ShowScrollingText(role, bleed_harm / bleed_count, "red");
+                }
+                
+            }
         }
         yield return null;
     }
@@ -116,10 +126,10 @@ public class StateTrack : MonoBehaviour
             if (role["attack_count"] > 0 || role["attack"] != 0)
             {
                 var enemy = role.process.role_list[(role.role_index + 1) % 2];
+            
                 role["harm"] += role["attack"] * 30;
                 role["harm"] += role["attack_count"] * ((int)role["power"] + role["note"]) * 30;
                 role["attack"] = 0;
-                role["attack_count"] = 0;
                 if (role["weak"] > 0)
                 {
                     role["harm"] *= 0.6f;
@@ -127,6 +137,15 @@ public class StateTrack : MonoBehaviour
                 if (enemy["easy_hurt"] > 0)
                 {
                     role["harm"] *= 1.5f;
+                }
+                float harm = role["harm"];
+                float attack_count = role["attack_count"];
+                role["attack_count"] = 0;
+                for(int i = 0; i < attack_count; i++) {
+                    if (harm / attack_count > 1) {
+                        ShowScrollingText(role, harm / attack_count, "red");
+                    }
+                    
                 }
             }
         }
@@ -139,18 +158,18 @@ public class StateTrack : MonoBehaviour
         if (role.role_index == 0)
         {
             if(color == "green") {
-                scrollingText1.ShowScrollingText($"<color={color}>+{num}</color>");
+                scrollingText1.ShowScrollingText($"<color={color}>{num}</color>");
             }else {
-                scrollingText2.ShowScrollingText($"<color={color}>+{num}</color>");
+                scrollingText2.ShowScrollingText($"<color={color}>{num}</color>");
             }
             
         }
         else
         {
             if(color == "green") {
-                scrollingText2.ShowScrollingText($"<color={color}>+{num}</color>");
+                scrollingText2.ShowScrollingText($"<color={color}>{num}</color>");
             }else {
-                scrollingText1.ShowScrollingText($"<color={color}>+{num}</color>");
+                scrollingText1.ShowScrollingText($"<color={color}>{num}</color>");
             }
         }
     }

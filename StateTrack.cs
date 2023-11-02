@@ -18,7 +18,7 @@ public class StateTrack : MonoBehaviour {
 
     private void Update()
     {
-        if (isRunning)
+        if (!isRunning)
         {
             Thread thread = new Thread(RunParallelFunctions);
             thread.Start();
@@ -44,7 +44,7 @@ public class StateTrack : MonoBehaviour {
         harmSettlementThread.Join();
         bleedHarmSettlementThread.Join();
 
-        
+        isRunning = false;
     }
     private void LifeRecover() {
 

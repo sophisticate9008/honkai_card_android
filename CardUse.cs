@@ -19,8 +19,10 @@ public class CardUse : MonoBehaviour {
     public Material gold; 
     public Material red;    
     private  Cards cardNow;
+    private  Cards cardNext;
     private Renderer childRenderer; 
 
+    private Renderer childRenderer1; 
     private void Start() {
         firstRole = GameProcess.Instance.role_list[0];
         secondRole = GameProcess.Instance.role_list[1];
@@ -32,12 +34,12 @@ public class CardUse : MonoBehaviour {
                 roleSelNow++;
                 firstRole.TurnBegin();
                 cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
-                Cards cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
+                cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
+                foundObject = GameObject.Find($"card_self_0{cardNow.index}");                
                 foundObject1 = GameObject.Find($"card_self_0{cardNext.index}");
-                targetScript = foundObject1.GetComponent<CardAnimation>();                
+                targetScript = foundObject.GetComponent<CardAnimation>();
+                targetScript1 = foundObject1.GetComponent<CardAnimation>();
                 int tempCount = firstRole.UseCard();
-                foundObject = GameObject.Find($"card_self_0{cardNow.index}");
-                targetScript1 = foundObject.GetComponent<CardAnimation>();
                 if (tempCount == 0) {
 
                 }else if(tempCount == 1) {
@@ -54,8 +56,8 @@ public class CardUse : MonoBehaviour {
                         Invoke("ChangeMaterial", 1.0f);
                     }
                     if(cardNext.broken) {
-                        childRenderer = foundObject.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial", 1.0f);
+                        childRenderer1 = foundObject1.GetComponent<Renderer>();
+                        Invoke("ChangeMaterial1", 1.0f);
                     }                                   
                 }
                 ShowStates();
@@ -63,34 +65,34 @@ public class CardUse : MonoBehaviour {
 
             }else if(roleSel % 2 == 1 && roleSelNow == roleSel) {
                 roleSelNow++;
-                secondRole.TurnBegin();
-                cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
-                Cards cardNext = secondRole.card_pack_instance[((int)secondRole["card_use_index"] + 1) % secondRole.card_pack_instance.Count];
-                foundObject1 = GameObject.Find($"card_self_0{cardNext.index}");
-                targetScript = foundObject1.GetComponent<CardAnimation>();                
-                int tempCount = secondRole.UseCard();
-                foundObject = GameObject.Find($"card_self_0{cardNow.index}");
-                targetScript1 = foundObject.GetComponent<CardAnimation>();
-                if (tempCount == 0) {
+                // secondRole.TurnBegin();
+                // cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
+                // cardNext = secondRole.card_pack_instance[((int)secondRole["card_use_index"] + 1) % secondRole.card_pack_instance.Count];
+                // foundObject = GameObject.Find($"card_enemy_0{cardNow.index}");                
+                // foundObject1 = GameObject.Find($"card_enemy_0{cardNext.index}");
+                // targetScript = foundObject.GetComponent<CardAnimation>();
+                // targetScript1 = foundObject1.GetComponent<CardAnimation>();
+                // int tempCount = secondRole.UseCard();
+                // if (tempCount == 0) {
 
-                }else if(tempCount == 1) {
-                    targetScript.StartAnimation();
-                    if(cardNow.broken) {
-                        childRenderer = foundObject.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial", 1.0f);  
-                    }
-                }else {
-                    targetScript.StartAnimation();
-                    targetScript1.StartAnimation();
-                    if(cardNow.broken) {
-                        childRenderer = foundObject.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial", 1.0f);
-                    }
-                    if(cardNext.broken) {
-                        childRenderer = foundObject.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial", 1.0f);
-                    }                                   
-                }
+                // }else if(tempCount == 1) {
+                //     targetScript.StartDescentAnimation();
+                //     if(cardNow.broken) {
+                //         childRenderer = foundObject.GetComponent<Renderer>();
+                //         Invoke("ChangeMaterial", 1.0f);  
+                //     }
+                // }else {
+                //     targetScript.StartDescentAnimation();
+                //     targetScript1.StartDescentAnimation();
+                //     if(cardNow.broken) {
+                //         childRenderer = foundObject.GetComponent<Renderer>();
+                //         Invoke("ChangeMaterial", 1.0f);
+                //     }
+                //     if(cardNext.broken) {
+                //         childRenderer1 = foundObject1.GetComponent<Renderer>();
+                //         Invoke("ChangeMaterial1", 1.0f);
+                //     }                                   
+                // }
                 ShowStates();
                 Invoke("ChangeVariable", 1.0f);
             }
@@ -117,6 +119,15 @@ public class CardUse : MonoBehaviour {
             childRenderer.material = gold;
         }else {
             childRenderer.material = purple;
+        }   
+    }
+    private void ChangeMaterial1() {
+        if(cardNext.color == "红") {
+            childRenderer1.material = red;
+        }else if(cardNext.color == "金") {
+            childRenderer1.material = gold;
+        }else {
+            childRenderer1.material = purple;
         }   
     }
     private void ShowStates() {

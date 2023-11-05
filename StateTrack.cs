@@ -86,7 +86,16 @@ public class StateTrack : MonoBehaviour
             {
                 enemy["life_change"] += 1;
             }
+            if(role["harm"] > 0 && role["attack_count"] == 0) {
+                ShowScrollingText(role, role["harm"], "red");
+            }else {
+                for(int i = 0; i < role["attack_count"]; i++) {
+                    ShowScrollingText(role, role["harm"] / role["attack_count"], "red");
+                }
+            }
+            role["attack_count"] = 0;
             role["harm"] = 0;
+
         }
         yield return null;
     }
@@ -115,7 +124,7 @@ public class StateTrack : MonoBehaviour
             role["bleed_count"] = 0;
             for(int i = 0; i < bleed_count; i++) {
                 if(bleed_harm / bleed_count > 1) {
-                    ShowScrollingText(role, bleed_harm / bleed_count, "red");
+                    ShowScrollingText(role, bleed_harm / bleed_count, "#8B0000");
                 }    
             }
         }
@@ -126,7 +135,7 @@ public class StateTrack : MonoBehaviour
     {
         foreach (var role in roleList)
         {
-            if (role["attack_count"] > 0 || role["attack"] != 0)
+            if (role["attack"] != 0)
             {
                 var enemy = role.process.role_list[(role.role_index + 1) % 2];
             
@@ -141,20 +150,6 @@ public class StateTrack : MonoBehaviour
                 {
                     role["harm"] *= 1.5f;
                 }
-                float harm = role["harm"];
-                float attack_count = role["attack_count"];
-                role["attack_count"] = 0;
-                if(harm > 0 && attack_count == 0) {
-                    ShowScrollingText(role, harm, "red");
-                }else {
-                    for(int i = 0; i < attack_count; i++) {
-                        if (harm / attack_count > 1) {
-                            ShowScrollingText(role, harm / attack_count, "red");
-                        }
-                        
-                    }                    
-                }
-
             }
         }
         yield return null;

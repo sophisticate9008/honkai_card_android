@@ -24,7 +24,7 @@ public class ScrollingText : MonoBehaviour
     {
         int colorChange = 1;
         int upBeilv = 1;
-        if(textQueue.Count != 1) {
+        if(textQueue.Count >= 3) {
             colorChange = 12;
             upBeilv = 3;
         }

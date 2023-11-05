@@ -720,6 +720,7 @@ public class Cards
                 role["attack_count"] += 1;
                 role["attack"] += 20 + level * 10;
                 role["bleed_harm"] += (int)(enemy["life_max"] - enemy["life_now"]) * level;
+                role["bleed_count"] += 1;
             };
             this.use = use;  
         }

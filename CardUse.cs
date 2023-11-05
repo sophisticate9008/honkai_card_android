@@ -107,7 +107,6 @@ public class CardUse : MonoBehaviour {
         foreach (var role in roleList)
         {
             role.harm_to_life_next = false;
-            Debug.Log(role.role_name + role["harm_to_life"].ToString());
         }
     }
     private void AllEnd() {

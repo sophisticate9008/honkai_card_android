@@ -119,7 +119,7 @@ public class StateTrack : MonoBehaviour
             string color = "#B3082F";
             if (!enemy.harm_to_life_next && enemy["harm_to_life"] > 0)
             {
-                color = "gray";
+                color = "#C99DD9";
                 enemy["life_recover"] += role["bleed_harm"] / 30;
             }
             else

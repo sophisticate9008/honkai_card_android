@@ -9,7 +9,7 @@ public class ScrollingText : MonoBehaviour
     private Text textPrefab;
     private Transform textContainer;
     public float scrollSpeed = 50f;
-    private float upBeilv = 1f;
+    private float upBeilv = 1.2f;
     private float colorChange = 1.5f;
     private float CD = 0.1f;
     private float lastTime = 0.0f;

@@ -93,7 +93,7 @@ public class StateTrack : MonoBehaviour
                 enemy["life_change"] += 1;
             }
             if(role["harm"] > 0 && role["attack_count"] == 0) {
-                ShowScrollingText(role, role["harm"].ToString(), color);
+                ShowScrollingText(role, ((int)role["harm"]).ToString(), color);
             }else {
                 for(int i = 0; i < role["attack_count"]; i++) {
                     if(role["harm"] / role["attack_count"] > 1) {

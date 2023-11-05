@@ -9,50 +9,51 @@ public class ScrollingText : MonoBehaviour
     private Text textPrefab;
     private Transform textContainer;
     public float scrollSpeed = 50f;
-
-    public float CD = 0.05f;
+    private float upBeilv = 1f;
+    private float colorChange = 1.5f;
+    private float CD = 0.1f;
     private float lastTime = 0.0f;
-    
-
-    private Queue<Text> textQueue = new Queue<Text>();
+    private bool running = false;
+    private List<Text> textList = new();
+    private List<Text> runningList = new();
     private void Start() {
         textPrefab = GetComponent<Text>();
         textContainer = transform.parent;
-
+        InvokeRepeating("RepeatShowText", 0.0f, CD);
     }
     private void Update()
     {
-        int colorChange = 2;
-        int upBeilv = 1;
-        if(textQueue.Count >= 3) {
-            colorChange = 10;
-            upBeilv = 5;
+
+       // 删除已经淡出的文本
+    }
+    private void RepeatShowText()
+    {
+        foreach(var text in textList) {
+            if(!runningList.Contains(text)) {
+                StartCoroutine(ChangeTextProperties(text));
+                textList.Remove(text);
+                break;
+            }
         }
-        // 移动和淡出现有文本
-        foreach (Text text in textQueue)
+    }
+    IEnumerator ChangeTextProperties(Text text)
+    {
+        runningList.Add(text);
+        text.enabled = true;
+        while (text.color.a > 0)
         {
             text.rectTransform.anchoredPosition += Vector2.up * scrollSpeed * Time.deltaTime * upBeilv;
             text.color -= new Color(0, 0, 0, colorChange) * Time.deltaTime;
-            
-            if(Time.time - lastTime > CD) {
-                lastTime = Time.time;
-            }else {
-                break;
-            }
-            
+            yield return null;
         }
-
-        // 删除已经淡出的文本
-        while (textQueue.Count > 0 && textQueue.Peek().color.a <= 0)
-        {
-            Destroy(textQueue.Dequeue().gameObject);
-        }
+        runningList.Remove(text);
+        Destroy(text.gameObject);
     }
-
     public void ShowScrollingText(string message)
     {
         Text newText = Instantiate(textPrefab, textContainer);
+        newText.enabled = false;
         newText.text = message;
-        textQueue.Enqueue(newText);
+        textList.Add(newText);
     }
 }

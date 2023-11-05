@@ -116,7 +116,7 @@ public class StateTrack : MonoBehaviour
             var enemy = role.process.role_list[(role.role_index + 1) % 2];
             float bleed_count = role["bleed_count"];
             float bleed_harm = role["bleed_harm"];
-            string color = "#8B0000";
+            string color = "#B3082F";
             if (!enemy.harm_to_life_next && enemy["harm_to_life"] > 0)
             {
                 color = "gray";

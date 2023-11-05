@@ -32,8 +32,9 @@ public class CardUse : MonoBehaviour {
     
         private void Update() {
             if(roleSel % 2 == 0 && roleSelNow == roleSel) {
-                AllBegin();
                 roleSelNow++;
+                AllBegin();
+                firstRole.TurnBegin();
                 ShowStates();
                 cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
                 cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
@@ -106,6 +107,7 @@ public class CardUse : MonoBehaviour {
         foreach (var role in roleList)
         {
             role.harm_to_life_next = false;
+            Debug.Log(role.role_name + role["harm_to_life"].ToString());
         }
     }
     private void AllEnd() {

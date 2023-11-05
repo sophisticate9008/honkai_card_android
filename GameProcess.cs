@@ -97,6 +97,7 @@ public class Roles
         InitializeProperty("bleed_count", 0);
         InitializeProperty("recover_count", 0);
         InitializeProperty("life_change", 0);
+        InitializeProperty("push_bleed", 0);
         this.role_name = role_name;
         this.process = process;
         process.role_list.Add(this);
@@ -140,8 +141,12 @@ public class Roles
         this["turn_count"] += 1;
     }
     public void turnEnd() {
+        var enemy = this.process.role_list[(this.role_index + 1) % 2];
         this["weak"] = Math.Max(0, this["weak"] - 1);
         this["easy_hurt"] = Math.Max(0, this["easy_hurt"] - 1);
+        enemy["bleed"] += this["push_bleed"];
+        this["push_bleed"] = 0;
+        enemy["push_bleed"] = 0;
     }
     public void RoleLoad()
     {
@@ -779,9 +784,9 @@ public class Cards
             Action use = () => {
                 for (int i = 0; i < 1 + level; i++)
                 {
-                    role["bleed_harm"] += role["bleed"];
+                    role["bleed_harm"] += role["bleed"] * 30;
                 }
-                role["bleed_count"] += 1;
+                role["bleed_count"] += 1 + level;
             };
             this.use = use;  
         }

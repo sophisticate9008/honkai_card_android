@@ -61,7 +61,7 @@ public class StateTrack : MonoBehaviour
                 role["life_now"] += temp;
                 role["life_max"] += temp;
                 role["life_recover"] = 0;
-                ShowScrollingText(role, temp.ToString(), "green");
+                ShowScrollingText(role, ((int)temp).ToString(), "green");
                 if(role.log != "") {
                     ShowScrollingText(role, role.log, "#499ACD");
                     role.log = "";
@@ -76,9 +76,11 @@ public class StateTrack : MonoBehaviour
         foreach (var role in roleList)
         {
             var enemy = role.process.role_list[(role.role_index + 1) % 2];
+            string color = "red";
             if (!enemy.harm_to_life_next && enemy["harm_to_life"] > 0)
             {
                 enemy["life_recover"] += role["harm"] / 30;
+                color = "white";
             }
             else
             {
@@ -91,11 +93,11 @@ public class StateTrack : MonoBehaviour
                 enemy["life_change"] += 1;
             }
             if(role["harm"] > 0 && role["attack_count"] == 0) {
-                ShowScrollingText(role, role["harm"].ToString(), "red");
+                ShowScrollingText(role, role["harm"].ToString(), color);
             }else {
                 for(int i = 0; i < role["attack_count"]; i++) {
                     if(role["harm"] / role["attack_count"] > 1) {
-                        ShowScrollingText(role, ((int)(role["harm"] / role["attack_count"])).ToString(), "red");
+                        ShowScrollingText(role, ((int)(role["harm"] / role["attack_count"])).ToString(), color);
                     }
                     
                 }
@@ -114,9 +116,10 @@ public class StateTrack : MonoBehaviour
             var enemy = role.process.role_list[(role.role_index + 1) % 2];
             float bleed_count = role["bleed_count"];
             float bleed_harm = role["bleed_harm"];
-
+            string color = "#8B0000";
             if (!enemy.harm_to_life_next && enemy["harm_to_life"] > 0)
             {
+                color = "gray";
                 enemy["life_recover"] += role["bleed_harm"] / 30;
             }
             else
@@ -130,8 +133,9 @@ public class StateTrack : MonoBehaviour
             role["bleed_harm"] = 0;
             role["bleed_count"] = 0;
             for(int i = 0; i < bleed_count; i++) {
+                
                 if(bleed_harm / bleed_count > 1) {
-                    ShowScrollingText(role, (bleed_harm / bleed_count).ToString(), "#8B0000");
+                    ShowScrollingText(role, (bleed_harm / bleed_count).ToString(), color);
                 }    
             }
         }

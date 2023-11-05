@@ -719,13 +719,13 @@ public class Cards
                 var enemy = role.process.role_list[(role.role_index + 1) % 2];
                 role["attack_count"] += 1;
                 role["attack"] += 20 + level * 10;
-                role["bleed_harm"] += (int)(enemy["life_max"] - enemy["life_now"]);
+                role["bleed_harm"] += (int)(enemy["life_max"] - enemy["life_now"]) * level;
             };
             this.use = use;  
         }
         if (card_name == "复原.光羽") {
             this.color = color;
-            this.describe = $"下{2 * (level == 3 ? 1 : 2)}回合自身受到的所有伤害转为治疗";
+            this.describe = $"下{2 * (level == 3 ? 2 : 1)}回合自身受到的所有伤害转为治疗";
             if (level == 1)
             {
                 this.mana= 2;
@@ -735,7 +735,7 @@ public class Cards
                 {
                     role.harm_to_life_next = true;
                 }
-                role["harm_to_life"] += level == 3 ? 2 : 1;
+                role["harm_to_life"] += 2 * (level == 3 ? 2 : 1);
             };
             this.use = use;  
         }

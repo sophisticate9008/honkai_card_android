@@ -21,18 +21,20 @@ public class CardUse : MonoBehaviour {
     private  Cards cardNow;
     private  Cards cardNext;
     private Renderer childRenderer; 
-
+    private Roles[] roleList = new Roles[2];
     private Renderer childRenderer1; 
     private void Start() {
         firstRole = GameProcess.Instance.role_list[0];
         secondRole = GameProcess.Instance.role_list[1];
-
+        roleList[0] = firstRole;
+        roleList[1] = secondRole;
     }
     
         private void Update() {
             if(roleSel % 2 == 0 && roleSelNow == roleSel) {
+                AllBegin();
                 roleSelNow++;
-                firstRole.TurnBegin();
+                ShowStates();
                 cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
                 cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
                 foundObject = GameObject.Find($"card_self_0{cardNow.index}");                
@@ -41,7 +43,6 @@ public class CardUse : MonoBehaviour {
                 targetScript1 = foundObject1.GetComponent<CardAnimation>();
                 int tempCount = firstRole.UseCard();
                 if (tempCount == 0) {
-
                 }else if(tempCount == 1) {
                     targetScript.StartAnimation();
                     if(cardNow.broken) {
@@ -66,6 +67,7 @@ public class CardUse : MonoBehaviour {
             }else if(roleSel % 2 == 1 && roleSelNow == roleSel) {
                 roleSelNow++;
                 secondRole.TurnBegin();
+                ShowStates();
                 cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
                 cardNext = secondRole.card_pack_instance[((int)secondRole["card_use_index"] + 1) % secondRole.card_pack_instance.Count];
                 foundObject = GameObject.Find($"card_enemy_0{cardNow.index}");                
@@ -94,10 +96,27 @@ public class CardUse : MonoBehaviour {
                     }                                   
                 }
                 ShowStates();
+                AllEnd();
                 Invoke("ChangeVariable", 1.0f);
+
             }
 
         }
+    private void AllBegin() {
+        foreach (var role in roleList)
+        {
+            role.harm_to_life_next = false;
+        }
+    }
+    private void AllEnd() {
+        foreach (var role in roleList)
+        {
+            if(!role.harm_to_life_next) {
+                role["harm_to_life"] -= role["harm_to_life"] > 0 ? 1 : 0;
+            }
+            
+        }
+    }
     private void ChangeVariable()
     {
         if(roleSel % 2 == 0) {
@@ -146,5 +165,6 @@ public class CardUse : MonoBehaviour {
         }
         state2.text = Texture.ColorizeText(stateOutput);    
     }
+
 
 }

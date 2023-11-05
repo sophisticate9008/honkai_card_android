@@ -128,6 +128,7 @@ public class Roles
     public bool no_limit = false;
 
     public string role_describe = "";
+    public string log = "";
 
     public void TurnBegin() {
         var enemy = this.process.role_list[(this.role_index + 1) % 2];
@@ -249,7 +250,7 @@ public class Roles
         }
         else
         {
-            // this["logs"] += "\n法力不足, 法力加1\n";
+            this.log += "\n法力不足, 法力加1\n";
             this["mana"] += 1;
             return 0;
         }

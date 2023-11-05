@@ -61,7 +61,11 @@ public class StateTrack : MonoBehaviour
                 role["life_now"] += temp;
                 role["life_max"] += temp;
                 role["life_recover"] = 0;
-                ShowScrollingText(role, temp, "green");
+                ShowScrollingText(role, temp.ToString(), "green");
+                if(role.log != "") {
+                    ShowScrollingText(role, role.log, "#499ACD");
+                    role.log = "";
+                }
             }
         }
         yield return null;
@@ -87,10 +91,13 @@ public class StateTrack : MonoBehaviour
                 enemy["life_change"] += 1;
             }
             if(role["harm"] > 0 && role["attack_count"] == 0) {
-                ShowScrollingText(role, role["harm"], "red");
+                ShowScrollingText(role, role["harm"].ToString(), "red");
             }else {
                 for(int i = 0; i < role["attack_count"]; i++) {
-                    ShowScrollingText(role, role["harm"] / role["attack_count"], "red");
+                    if(role["harm"] / role["attack_count"] > 1) {
+                        ShowScrollingText(role, ((int)(role["harm"] / role["attack_count"])).ToString(), "red");
+                    }
+                    
                 }
             }
             role["attack_count"] = 0;
@@ -124,7 +131,7 @@ public class StateTrack : MonoBehaviour
             role["bleed_count"] = 0;
             for(int i = 0; i < bleed_count; i++) {
                 if(bleed_harm / bleed_count > 1) {
-                    ShowScrollingText(role, bleed_harm / bleed_count, "#8B0000");
+                    ShowScrollingText(role, (bleed_harm / bleed_count).ToString(), "#8B0000");
                 }    
             }
         }
@@ -155,24 +162,24 @@ public class StateTrack : MonoBehaviour
         yield return null;
     }
 
-    private void ShowScrollingText(Roles role, float num, string color)
+    private void ShowScrollingText(Roles role, string str, string color)
     {
 
         if (role.role_index == 0)
         {
-            if(color == "green") {
-                scrollingText1.ShowScrollingText($"<color={color}>{num}</color>");
+            if(color == "green" || color == "#499ACD") {
+                scrollingText1.ShowScrollingText($"<color={color}>{str}</color>");
             }else {
-                scrollingText2.ShowScrollingText($"<color={color}>{num}</color>");
+                scrollingText2.ShowScrollingText($"<color={color}>{str}</color>");
             }
             
         }
         else
         {
-            if(color == "green") {
-                scrollingText2.ShowScrollingText($"<color={color}>{num}</color>");
+            if(color == "green" || color == "#499ACD") {
+                scrollingText2.ShowScrollingText($"<color={color}>{str}</color>");
             }else {
-                scrollingText1.ShowScrollingText($"<color={color}>{num}</color>");
+                scrollingText1.ShowScrollingText($"<color={color}>{str}</color>");
             }
         }
     }

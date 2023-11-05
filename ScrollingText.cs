@@ -22,11 +22,11 @@ public class ScrollingText : MonoBehaviour
     }
     private void Update()
     {
-        int colorChange = 1;
+        int colorChange = 2;
         int upBeilv = 1;
         if(textQueue.Count >= 3) {
-            colorChange = 12;
-            upBeilv = 3;
+            colorChange = 10;
+            upBeilv = 5;
         }
         // 移动和淡出现有文本
         foreach (Text text in textQueue)

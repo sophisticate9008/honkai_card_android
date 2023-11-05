@@ -72,7 +72,7 @@ public class Roles
         InitializeProperty("bleed", 0);
         InitializeProperty("heal", 0);
         InitializeProperty("note", 0);
-        InitializeProperty("mana", 10);
+        InitializeProperty("mana", 0);
         InitializeProperty("rampart", 0);
         InitializeProperty("weak", 0);
         InitializeProperty("easy_hurt", 0);
@@ -194,16 +194,13 @@ public class Roles
             this["life_max"] += 15 * 30;
         }
     }
-    public void UseCard()
+    public int UseCard()
     {
-        if (this["fast_card_limit"] == 0)
-        {
-            
-        }
+        int tempCount = 0;
         var card_use = this.card_pack_instance[(int)this["card_use_index"]];
         if (this["mana"] >= card_use.mana)
         {
-
+            tempCount += 1;
             this["mana"] -= card_use.mana;
             this["card_use_count"]++;
             for (int i = 0; i < this["effect_count_next"]; i++)
@@ -238,14 +235,18 @@ public class Roles
             if ((card_use.fast_card || this.all_fast_card) && this["fast_card_limit"] == 0)
             {
                 this["fast_card_limit"] = (this["fast_card_limit"] + 1) % 2;
-                UseCard();
+                int result = UseCard();
                 this["fast_card_limit"] = (this["fast_card_limit"] + 1) % 2;
+                return result + tempCount;
+            }else {
+                return tempCount;
             }
         }
         else
         {
             // this["logs"] += "\n法力不足, 法力加1\n";
             this["mana"] += 1;
+            return 0;
         }
     }
 
@@ -1068,14 +1069,14 @@ public class GameProcess : MonoBehaviour
     private void InitializeSingleton()
     {
         // 单例初始化的逻辑，包括创建 card_pack1 和 card_pack2
-        card_pack1 = ChooseRandomElements(starAndLuck, 8);
-        card_pack2 = ChooseRandomElements(starAndLuck, 8);
+        card_pack1 = ChooseRandomElements(lightAndNight, 8);
+        card_pack2 = ChooseRandomElements(lightAndNight, 8);
 
         // 创建 Roles 实例
         List<string> modifiedCardPack1 = card_pack1.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
         List<string> modifiedCardPack2 = card_pack2.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
-        Roles role1 = new Roles("西琳", modifiedCardPack1, this);
-        Roles role2 = new Roles("特丽丽", modifiedCardPack2, this);
+        Roles role1 = new Roles("芙乐艾", modifiedCardPack1, this);
+        Roles role2 = new Roles("布洛洛", modifiedCardPack2, this);
         role1.RoleLoad();
         role2.RoleLoad();
     }

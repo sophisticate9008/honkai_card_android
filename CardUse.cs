@@ -10,7 +10,9 @@ public class CardUse : MonoBehaviour {
     public Text state1;
     public Text state2;
     private GameObject foundObject;
+    private GameObject foundObject1;
     private CardAnimation targetScript;
+        private CardAnimation targetScript1;
     private int roleSel = 0;
     private int roleSelNow = 0;
     public Material purple; 
@@ -30,15 +32,31 @@ public class CardUse : MonoBehaviour {
                 roleSelNow++;
                 firstRole.TurnBegin();
                 cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
-                firstRole.UseCard();
+                Cards cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
+                foundObject1 = GameObject.Find($"card_self_0{cardNext.index}");
+                targetScript = foundObject1.GetComponent<CardAnimation>();                
+                int tempCount = firstRole.UseCard();
                 foundObject = GameObject.Find($"card_self_0{cardNow.index}");
-                targetScript = foundObject.GetComponent<CardAnimation>();
-                if(!targetScript.isAnimating) {
+                targetScript1 = foundObject.GetComponent<CardAnimation>();
+                if (tempCount == 0) {
+
+                }else if(tempCount == 1) {
                     targetScript.StartAnimation();
-                }
-                if(cardNow.broken) {
-                    childRenderer = foundObject.GetComponent<Renderer>();
-                    Invoke("ChangeMaterial", 1.0f);                    
+                    if(cardNow.broken) {
+                        childRenderer = foundObject.GetComponent<Renderer>();
+                        Invoke("ChangeMaterial", 1.0f);  
+                    }
+                }else {
+                    targetScript.StartAnimation();
+                    targetScript1.StartAnimation();
+                    if(cardNow.broken) {
+                        childRenderer = foundObject.GetComponent<Renderer>();
+                        Invoke("ChangeMaterial", 1.0f);
+                    }
+                    if(cardNext.broken) {
+                        childRenderer = foundObject.GetComponent<Renderer>();
+                        Invoke("ChangeMaterial", 1.0f);
+                    }                                   
                 }
                 ShowStates();
                 Invoke("ChangeVariable", 1.0f);
@@ -47,17 +65,33 @@ public class CardUse : MonoBehaviour {
                 roleSelNow++;
                 secondRole.TurnBegin();
                 cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
-                secondRole.UseCard();
-                foundObject = GameObject.Find($"card_enemy_0{cardNow.index}");
-                targetScript = foundObject.GetComponent<CardAnimation>();
-                if(!targetScript.isAnimating) {
-                    targetScript.StartDescentAnimation();    
+                Cards cardNext = secondRole.card_pack_instance[((int)secondRole["card_use_index"] + 1) % secondRole.card_pack_instance.Count];
+                foundObject1 = GameObject.Find($"card_self_0{cardNext.index}");
+                targetScript = foundObject1.GetComponent<CardAnimation>();                
+                int tempCount = secondRole.UseCard();
+                foundObject = GameObject.Find($"card_self_0{cardNow.index}");
+                targetScript1 = foundObject.GetComponent<CardAnimation>();
+                if (tempCount == 0) {
+
+                }else if(tempCount == 1) {
+                    targetScript.StartAnimation();
+                    if(cardNow.broken) {
+                        childRenderer = foundObject.GetComponent<Renderer>();
+                        Invoke("ChangeMaterial", 1.0f);  
+                    }
+                }else {
+                    targetScript.StartAnimation();
+                    targetScript1.StartAnimation();
+                    if(cardNow.broken) {
+                        childRenderer = foundObject.GetComponent<Renderer>();
+                        Invoke("ChangeMaterial", 1.0f);
+                    }
+                    if(cardNext.broken) {
+                        childRenderer = foundObject.GetComponent<Renderer>();
+                        Invoke("ChangeMaterial", 1.0f);
+                    }                                   
                 }
-                if(cardNow.broken) {
-                    childRenderer = foundObject.GetComponent<Renderer>();
-                    Invoke("ChangeMaterial", 1.0f);                  
-                }
-                ShowStates();             
+                ShowStates();
                 Invoke("ChangeVariable", 1.0f);
             }
 

@@ -97,7 +97,6 @@ public class CardUse : MonoBehaviour {
                     }                                   
                 }
                 ShowStates();
-                AllEnd();
                 Invoke("ChangeVariable", 1.0f);
 
             }
@@ -120,12 +119,14 @@ public class CardUse : MonoBehaviour {
     }
     private void ChangeVariable()
     {
+        
         if(roleSel % 2 == 0) {
             firstRole.turnEnd();
             ShowStates();
         }
         else {
             secondRole.turnEnd();
+            AllEnd();
             ShowStates();
         }
         roleSel++;

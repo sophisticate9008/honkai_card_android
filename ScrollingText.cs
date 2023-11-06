@@ -12,8 +12,6 @@ public class ScrollingText : MonoBehaviour
     private float upBeilv = 1.2f;
     private float colorChange = 1.5f;
     private float CD = 0.1f;
-    private float lastTime = 0.0f;
-    private bool running = false;
     private List<Text> textList = new();
     private List<Text> runningList = new();
     private void Start() {

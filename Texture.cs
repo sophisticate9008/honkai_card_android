@@ -87,7 +87,7 @@ public class Texture : MonoBehaviour
         }        
     }
 
-    private Transform[] GetChildObjects(Transform parent)
+    public static Transform[] GetChildObjects(Transform parent)
     {
         int childCount = parent.childCount;
         Transform[] children = new Transform[childCount];

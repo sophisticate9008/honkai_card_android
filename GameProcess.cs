@@ -1041,7 +1041,7 @@ public class GameProcess : MonoBehaviour
     };
     public List<Roles> role_list = new();
     public System.Random random = new();
-    private static GameProcess instance;
+    private static GameProcess? instance;
 
     
     public static GameProcess? Instance
@@ -1056,8 +1056,8 @@ public class GameProcess : MonoBehaviour
         }
     }
 
-    public List<string> card_pack1;
-    public List<string> card_pack2;
+    public List<string>? card_pack1;
+    public List<string>? card_pack2;
 
     private void Awake()
     {

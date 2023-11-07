@@ -84,7 +84,7 @@ public class Texture : MonoBehaviour
                 childRenderer.material = purple;
             }
             temp++;
-        }        
+        }
     }
 
     public static Transform[] GetChildObjects(Transform parent)
@@ -99,7 +99,7 @@ public class Texture : MonoBehaviour
 
         return children;
     }
-    private void AllSetFontsize(Transform obj, int size) {
+    public static void AllSetFontsize(Transform obj, int size) {
         Transform[] canvasChild = GetChildObjects(obj);
         for(int i = 0; i < obj.childCount; i++) {
             Text temp = canvasChild[i].GetComponent<Text>();

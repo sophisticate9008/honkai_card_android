@@ -41,11 +41,11 @@ public class Roles
     public List<Cards> card_pack_instance = new();
     public List<string> track_list = new();
     public List<string> only_list = new();
-    public string role_name;
+    public string role_name = "";
     public bool respone_complete;
     public int role_index;
     public bool harm_to_life_next = false;
-    public GameProcess process;
+    public GameProcess process = new();
     public List<Cards> card_pack_instance_backup = new();
     public static Dictionary<string, string> name_args = new()
     {
@@ -59,6 +59,7 @@ public class Roles
         { "easy_hurt", "易伤" },
         { "note", "乐符" }
     };  
+    public Roles() {}
     public Roles(string role_name, List<string> card_pack, GameProcess process)
     {
         InitializeProperty("coin_", 0);
@@ -1041,9 +1042,9 @@ public class GameProcess : MonoBehaviour
     };
     public List<Roles> role_list = new();
     public System.Random random = new();
-    private static GameProcess? instance;
+    private static GameProcess instance;
 
-    
+    public GameProcess() {}
     public static GameProcess? Instance
     {
         get
@@ -1056,8 +1057,8 @@ public class GameProcess : MonoBehaviour
         }
     }
 
-    public List<string>? card_pack1;
-    public List<string>? card_pack2;
+    public List<string> card_pack1 = new();
+    public List<string> card_pack2 = new();
 
     private void Awake()
     {
@@ -1088,7 +1089,7 @@ public class GameProcess : MonoBehaviour
         role2.RoleLoad();
     }
 
-    private List<T> ChooseRandomElements<T>(List<T> objects, int k)
+    public static List<T> ChooseRandomElements<T>(List<T> objects, int k)
     {
         List<T> result = new();
         System.Random random = new();

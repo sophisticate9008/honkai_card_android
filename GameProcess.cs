@@ -1042,6 +1042,7 @@ public class GameProcess : MonoBehaviour
     };
     public List<Roles> role_list = new();
     public System.Random random = new();
+    public static List<List<string>> cardPacks = new();
     private static GameProcess instance;
 
     public GameProcess() {}
@@ -1057,8 +1058,6 @@ public class GameProcess : MonoBehaviour
         }
     }
 
-    public List<string> card_pack1 = new();
-    public List<string> card_pack2 = new();
 
     private void Awake()
     {
@@ -1077,14 +1076,11 @@ public class GameProcess : MonoBehaviour
     private void InitializeSingleton()
     {
         // 单例初始化的逻辑，包括创建 card_pack1 和 card_pack2
-        card_pack1 = ChooseRandomElements(lightAndNight, 8);
-        card_pack2 = ChooseRandomElements(lightAndNight, 8);
 
         // 创建 Roles 实例
-        List<string> modifiedCardPack1 = card_pack1.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
-        List<string> modifiedCardPack2 = card_pack2.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
-        Roles role1 = new Roles("芙乐艾", modifiedCardPack1, this);
-        Roles role2 = new Roles("布洛洛", modifiedCardPack2, this);
+
+        Roles role1 = new Roles("芙乐艾", cardPacks[1], this);
+        Roles role2 = new Roles("布洛洛", cardPacks[0], this);
         role1.RoleLoad();
         role2.RoleLoad();
     }
@@ -1107,6 +1103,7 @@ public class GameProcess : MonoBehaviour
 
         return result;
     }
+
 }
 
 

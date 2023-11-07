@@ -18,33 +18,12 @@ public class CardDrawing : MonoBehaviour
 
     public int cardNum;
     public string cardParent;    
-    private List<string> modifiedCardPack = new();
+    public List<string> modifiedCardPack = new();
 
     private void Start() {
         floatWindow = GameObject.Find(cardParent).GetComponent<Transform>();
-
-        if (gameObject.TryGetComponent(out Collider2D collider2D))
-        {
-            
-            DrawingCard();
-        }
-        else
-        {
-            
-            DrawingCard();
-        }
-        
+        DrawingCard();
     }
-    private void OnMouseDown() {
-        cardObjs.Add(transform);
-        cardDatas.Add(modifiedCardPack[int.Parse(transform.name)]);
-        if(cardDatas.Count < 8) {
-            DrawingCard();
-            return;
-        }
-        GameProcess.cardPacks.Add(cardDatas);
-        SceneManager.LoadScene("GameProcess");
-    } 
     public void DrawingCard() {
 
         cardPack = GameProcess.ChooseRandomElements(GameProcess.lightAndNight, cardNum);

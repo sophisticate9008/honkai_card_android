@@ -39,7 +39,7 @@ public class CardTextForward : MonoBehaviour
                     uiText.rectTransform.position = screenPos + offsets[i];
                     // 设置UI Text的尺寸，可根据需要自定义
                     uiText.rectTransform.sizeDelta = new Vector2(screenWidth / 908 * 70, screenHeight / 511 * 90); // 调整尺寸以适应你的需求                
-                }                
+                }
             }
 
 

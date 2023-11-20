@@ -15,7 +15,7 @@ public class CardDrawing : MonoBehaviour
     private List<string> cardPack = new();
     private List<Cards> cardInstance = new();
     private Transform floatWindow;
-
+    public int cardPackSel;
     public int cardNum;
     public string cardParent;    
     public List<string> modifiedCardPack = new();
@@ -25,12 +25,18 @@ public class CardDrawing : MonoBehaviour
         DrawingCard();
     }
     public void DrawingCard() {
-
+        
         cardPack = GameProcess.ChooseRandomElements(GameProcess.lightAndNight, cardNum);
-        modifiedCardPack = cardPack.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
-        if(cardNum == 8) {
-            GameProcess.cardPacks.Add(modifiedCardPack);
-        }        
+        if(GameProcess.cardPacks.Count > cardPackSel && GameProcess.cardPacks[cardPackSel] != null) {
+            modifiedCardPack = GameProcess.cardPacks[cardPackSel];
+        }else {
+            modifiedCardPack = cardPack.Select(item => $"{item}_{random.Next(1, 4)}").ToList();
+            if(cardNum == 8) {
+                GameProcess.cardPacks.Add(modifiedCardPack);
+            }              
+        }
+        
+      
         foreach (var card in modifiedCardPack)
         {
             Roles emptyRole = new();

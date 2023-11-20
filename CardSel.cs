@@ -7,15 +7,16 @@ public class CardSel : MonoBehaviour {
         cardParent = GameObject.Find("ThreeCard").GetComponent<CardDrawing>();
     }
     private void OnMouseDown() {
-        if(CardDrawing.cardDatas.Count < 8) {
-            Debug.Log(cardParent.modifiedCardPack[int.Parse(gameObject.name)]);
-            CardDrawing.cardDatas.Add(cardParent.modifiedCardPack[int.Parse(gameObject.name)]);
-            CardDrawing.cardObjs.Add(transform);
-            cardParent.DrawingCard();
-            return;
+
+        Debug.Log(cardParent.modifiedCardPack[int.Parse(gameObject.name)]);
+        CardDrawing.cardDatas.Add(cardParent.modifiedCardPack[int.Parse(gameObject.name)]);
+        CardDrawing.cardObjs.Add(transform);
+        cardParent.DrawingCard();
+        if(CardDrawing.cardDatas.Count == 8) {
+            GameProcess.cardPacks.Add(CardDrawing.cardDatas);
+            SceneManager.LoadScene("CardOrder");
         }
         
-        GameProcess.cardPacks.Add(CardDrawing.cardDatas);
-        SceneManager.LoadScene("GameProcess");
+        
     }
 }

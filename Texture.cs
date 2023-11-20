@@ -30,61 +30,8 @@ public class Texture : MonoBehaviour
     private Roles firstRole;
     private Roles secondRole;
     private void Start() {
-        screenWidth = Screen.width;
-        screenHeight = Screen.height;
-        self = transform.Find("self");
-        enemy = transform.Find("enemy");
-        firstRole = GameProcess.Instance.role_list[0];
-        secondRole = GameProcess.Instance.role_list[1];
 
-        Transform[] firstObjects = GetChildObjects(self);
-        Transform[] secondObjects = GetChildObjects(enemy);
-        int temp = 0;
-        foreach(var card in firstRole.card_pack_instance) {
-            Renderer childRenderer = firstObjects[temp].GetComponent<Renderer>();
-            Transform childCanvas = firstObjects[temp].GetChild(0);
-            AllSetFontsize(childCanvas, screenWidth / 908 * 9);
-            Transform[] canvasChild = GetChildObjects(childCanvas);
-            Text nameText = canvasChild[0].GetComponent<Text>();
-            Text desText = canvasChild[1].GetComponent<Text>();
-            Text manaText = canvasChild[2].GetComponent<Text>();
-            Text starText = canvasChild[3].GetComponent<Text>();
-            nameText.text = card.card_name;
-            desText.text = ColorizeText(card.describe);
-            manaText.text = card.mana.ToString();
-            starText.text = new string('★', card.level);
-            if(card.color == "红") {
-                childRenderer.material = red;
-            }else if(card.color == "金") {
-                childRenderer.material = gold;
-            }else {
-                childRenderer.material = purple;
-            }
-            temp++;
-        }
-        temp = 0;
-        foreach(var card in secondRole.card_pack_instance) {
-            Renderer childRenderer = secondObjects[temp].GetComponent<Renderer>();
-            Transform childCanvas = secondObjects[temp].GetChild(0);
-            AllSetFontsize(childCanvas, screenWidth / 908 * 9);
-            Transform[] canvasChild = GetChildObjects(childCanvas);
-            Text nameText = canvasChild[0].GetComponent<Text>();
-            Text desText = canvasChild[1].GetComponent<Text>();
-            Text manaText = canvasChild[2].GetComponent<Text>();
-            Text starText = canvasChild[3].GetComponent<Text>();
-            nameText.text = card.card_name;
-            desText.text = ColorizeText(card.describe);
-            manaText.text = card.mana.ToString();
-            starText.text = new string('★', card.level);
-            if(card.color == "红") {
-                childRenderer.material = red;
-            }else if(card.color == "金") {
-                childRenderer.material = gold;
-            }else {
-                childRenderer.material = purple;
-            }
-            temp++;
-        }
+        
     }
 
     public static Transform[] GetChildObjects(Transform parent)

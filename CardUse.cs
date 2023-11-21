@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class CardUse : MonoBehaviour {
 
+    public bool isGameOver = false;
     private Roles firstRole;
     private Roles secondRole;
     public Text state1;
@@ -31,75 +32,78 @@ public class CardUse : MonoBehaviour {
     }
     
         private void Update() {
-            if(roleSel % 2 == 0 && roleSelNow == roleSel) {
-                roleSelNow++;
-                AllBegin();
-                firstRole.TurnBegin();
-                ShowStates();
-                cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
-                cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
-                foundObject = GameObject.Find($"card_self_0{cardNow.index}");                
-                foundObject1 = GameObject.Find($"card_self_0{cardNext.index}");
-                targetScript = foundObject.GetComponent<CardAnimation>();
-                targetScript1 = foundObject1.GetComponent<CardAnimation>();
-                int tempCount = firstRole.UseCard();
-                if (tempCount == 0) {
-                }else if(tempCount == 1) {
-                    targetScript.StartAnimation();
-                    if(cardNow.broken) {
-                        childRenderer = foundObject.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial", 1.0f);  
+            if(!isGameOver) {
+                if(roleSel % 2 == 0 && roleSelNow == roleSel) {
+                    roleSelNow++;
+                    AllBegin();
+                    firstRole.TurnBegin();
+                    ShowStates();
+                    cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
+                    cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
+                    foundObject = GameObject.Find($"card_self_0{cardNow.index}");                
+                    foundObject1 = GameObject.Find($"card_self_0{cardNext.index}");
+                    targetScript = foundObject.GetComponent<CardAnimation>();
+                    targetScript1 = foundObject1.GetComponent<CardAnimation>();
+                    int tempCount = firstRole.UseCard();
+                    if (tempCount == 0) {
+                    }else if(tempCount == 1) {
+                        targetScript.StartAnimation();
+                        if(cardNow.broken) {
+                            childRenderer = foundObject.GetComponent<Renderer>();
+                            Invoke("ChangeMaterial", 1.0f);  
+                        }
+                    }else {
+                        targetScript.StartAnimation();
+                        targetScript1.StartAnimation();
+                        if(cardNow.broken) {
+                            childRenderer = foundObject.GetComponent<Renderer>();
+                            Invoke("ChangeMaterial", 1.0f);
+                        }
+                        if(cardNext.broken) {
+                            childRenderer1 = foundObject1.GetComponent<Renderer>();
+                            Invoke("ChangeMaterial1", 1.0f);
+                        }                                   
                     }
-                }else {
-                    targetScript.StartAnimation();
-                    targetScript1.StartAnimation();
-                    if(cardNow.broken) {
-                        childRenderer = foundObject.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial", 1.0f);
-                    }
-                    if(cardNext.broken) {
-                        childRenderer1 = foundObject1.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial1", 1.0f);
-                    }                                   
-                }
-                ShowStates();
-                Invoke("ChangeVariable", 1.0f);
+                    ShowStates();
+                    Invoke("ChangeVariable", 1.0f);
 
-            }else if(roleSel % 2 == 1 && roleSelNow == roleSel) {
-                roleSelNow++;
-                secondRole.TurnBegin();
-                ShowStates();
-                cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
-                cardNext = secondRole.card_pack_instance[((int)secondRole["card_use_index"] + 1) % secondRole.card_pack_instance.Count];
-                foundObject = GameObject.Find($"card_enemy_0{cardNow.index}");                
-                foundObject1 = GameObject.Find($"card_enemy_0{cardNext.index}");
-                targetScript = foundObject.GetComponent<CardAnimation>();
-                targetScript1 = foundObject1.GetComponent<CardAnimation>();
-                int tempCount = secondRole.UseCard();
-                if (tempCount == 0) {
+                }else if(roleSel % 2 == 1 && roleSelNow == roleSel) {
+                    roleSelNow++;
+                    secondRole.TurnBegin();
+                    ShowStates();
+                    cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
+                    cardNext = secondRole.card_pack_instance[((int)secondRole["card_use_index"] + 1) % secondRole.card_pack_instance.Count];
+                    foundObject = GameObject.Find($"card_enemy_0{cardNow.index}");                
+                    foundObject1 = GameObject.Find($"card_enemy_0{cardNext.index}");
+                    targetScript = foundObject.GetComponent<CardAnimation>();
+                    targetScript1 = foundObject1.GetComponent<CardAnimation>();
+                    int tempCount = secondRole.UseCard();
+                    if (tempCount == 0) {
 
-                }else if(tempCount == 1) {
-                    targetScript.StartDescentAnimation();
-                    if(cardNow.broken) {
-                        childRenderer = foundObject.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial", 1.0f);  
+                    }else if(tempCount == 1) {
+                        targetScript.StartDescentAnimation();
+                        if(cardNow.broken) {
+                            childRenderer = foundObject.GetComponent<Renderer>();
+                            Invoke("ChangeMaterial", 1.0f);  
+                        }
+                    }else {
+                        targetScript.StartDescentAnimation();
+                        targetScript1.StartDescentAnimation();
+                        if(cardNow.broken) {
+                            childRenderer = foundObject.GetComponent<Renderer>();
+                            Invoke("ChangeMaterial", 1.0f);
+                        }
+                        if(cardNext.broken) {
+                            childRenderer1 = foundObject1.GetComponent<Renderer>();
+                            Invoke("ChangeMaterial1", 1.0f);
+                        }                                   
                     }
-                }else {
-                    targetScript.StartDescentAnimation();
-                    targetScript1.StartDescentAnimation();
-                    if(cardNow.broken) {
-                        childRenderer = foundObject.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial", 1.0f);
-                    }
-                    if(cardNext.broken) {
-                        childRenderer1 = foundObject1.GetComponent<Renderer>();
-                        Invoke("ChangeMaterial1", 1.0f);
-                    }                                   
-                }
-                ShowStates();
-                Invoke("ChangeVariable", 1.0f);
+                    ShowStates();
+                    Invoke("ChangeVariable", 1.0f);
 
+                }                
             }
+
 
         }
     private void AllBegin() {

@@ -10,7 +10,7 @@ public class CardDrawing : MonoBehaviour
     public Material gold; // 不需要在Inspector面板中分配Material2的初始值
     public Material red; 
     private System.Random random = new();
-    public static List<Transform> cardObjs = new();
+
     public static List<string> cardDatas = new();
     private List<string> cardPack = new();
     private List<Cards> cardInstance = new();
@@ -19,14 +19,29 @@ public class CardDrawing : MonoBehaviour
     public int cardNum;
     public string cardParent;    
     public List<string> modifiedCardPack = new();
-
+    public List<string> packSel;
     private void Start() {
         floatWindow = GameObject.Find(cardParent).GetComponent<Transform>();
+        int tempNum = random.Next(0,4);
+        if(tempNum == 0) {
+            GameProcess.roleSelList.Add("西琳");
+            packSel = GameProcess.starAndLuck;
+        }else if(tempNum == 1) {
+            GameProcess.roleSelList.Add("特丽丽");
+            packSel = GameProcess.starAndLuck;            
+        }else if(tempNum == 2) {
+            GameProcess.roleSelList.Add("芙乐艾");
+            packSel = GameProcess.lightAndNight;             
+        }else if(tempNum == 3) {
+            GameProcess.roleSelList.Add("布洛洛");
+            packSel = GameProcess.lightAndNight;                  
+        }
         DrawingCard();
     }
     public void DrawingCard() {
         
-        cardPack = GameProcess.ChooseRandomElements(GameProcess.lightAndNight, cardNum);
+        
+        cardPack = GameProcess.ChooseRandomElements(packSel, cardNum);
         if(GameProcess.cardPacks.Count > cardPackSel && GameProcess.cardPacks[cardPackSel] != null) {
             modifiedCardPack = GameProcess.cardPacks[cardPackSel];
         }else {

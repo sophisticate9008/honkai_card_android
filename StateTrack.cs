@@ -17,8 +17,17 @@ public class StateTrack : MonoBehaviour
     private Roles[] roleList = new Roles[2];
     public Text desL;
     public Text desR;
+    GameEnd gameEnd;
+    GameObject gameEndObj;
+    CardUse cardUse;
+    private void Awake() {
+        gameEndObj = GameObject.Find("GameEnd");
+        gameEnd = gameEndObj.GetComponent<GameEnd>();
+        cardUse = GameObject.Find("CardUse").GetComponent<CardUse>();
+    }
     private void Start()
     {
+        gameEndObj.SetActive(false);
         firstRole = GameProcess.Instance.role_list[0];
         secondRole = GameProcess.Instance.role_list[1];
         roleList[0] = firstRole;
@@ -104,7 +113,7 @@ public class StateTrack : MonoBehaviour
             }
             role["attack_count"] = 0;
             role["harm"] = 0;
-
+            judgeEnd();
         }
         yield return null;
     }
@@ -138,6 +147,7 @@ public class StateTrack : MonoBehaviour
                     ShowScrollingText(role, (bleed_harm / bleed_count).ToString(), color);
                 }    
             }
+            judgeEnd();
         }
         yield return null;
     }
@@ -185,6 +195,21 @@ public class StateTrack : MonoBehaviour
             }else {
                 scrollingText1.ShowScrollingText($"<color={color}>{str}</color>");
             }
+        }
+    }
+    private void judgeEnd() {
+        for(int i = 0; i < 2; i++) {
+            if(roleList[i]["life_now"] <= 0) {
+                cardUse.isGameOver = true;
+                gameEndObj.SetActive(true);
+                if(i == 0) {
+                    gameEnd.PushResult("你输了");
+                }else {
+                    gameEnd.PushResult("你赢了");
+                }
+                return;
+            }
+            
         }
     }
 }

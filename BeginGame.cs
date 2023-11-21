@@ -30,9 +30,12 @@ public class BeginGame : MonoBehaviour
             int lastInt = (int)Char.GetNumericValue(lastChar); // 将最后一个字符转换为整数
             order.Add(lastInt);
         }
-
+        Debug.Log(order);
         // 使用OrderBy对字符串列表进行排序
-        var sortedList = GameProcess.cardPacks[1].OrderBy(card => order[GameProcess.cardPacks[1].IndexOf(card)]).ToList();
+        List<string> sortedList = new();
+        foreach (var idx in order) {
+            sortedList.Add(GameProcess.cardPacks[1][idx]);
+        }
 
         // 用排序后的列表替换原始列表
         GameProcess.cardPacks[1] = sortedList;

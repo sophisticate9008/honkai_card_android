@@ -15,4 +15,10 @@ public class BeginSel : MonoBehaviour {
         enemyCards.SetActive(true);
         gameObject.SetActive(false);
     }
+
+    // public void reload() {
+    //     gameObject.SetActive(true);
+    //     startGame.SetActive(false);
+    //     enemyCards.SetActive(false);
+    // }
 }

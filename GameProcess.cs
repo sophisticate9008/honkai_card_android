@@ -1044,6 +1044,7 @@ public class GameProcess : MonoBehaviour
     public System.Random random = new();
     public static List<List<string>> cardPacks = new();
     private static GameProcess instance;
+    public static List<string> roleSelList = new();
 
     public GameProcess() {}
     public static GameProcess? Instance
@@ -1064,7 +1065,7 @@ public class GameProcess : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // 保持单例在场景切换时不被销毁
+            // DontDestroyOnLoad(gameObject); // 保持单例在场景切换时不被销毁
             InitializeSingleton();
         }
         else
@@ -1079,8 +1080,8 @@ public class GameProcess : MonoBehaviour
 
         // 创建 Roles 实例
 
-        Roles role1 = new Roles("芙乐艾", cardPacks[1], this);
-        Roles role2 = new Roles("布洛洛", cardPacks[0], this);
+        Roles role1 = new Roles(roleSelList[1], cardPacks[1], this);
+        Roles role2 = new Roles(roleSelList[0], cardPacks[0], this);
         role1.RoleLoad();
         role2.RoleLoad();
     }

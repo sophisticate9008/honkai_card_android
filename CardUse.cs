@@ -32,7 +32,9 @@ public class CardUse : MonoBehaviour {
     }
     
         private void Update() {
+            
             if(!isGameOver) {
+                Time.timeScale = (float)(1 + (int)roleList[0]["turn_count"] / 8 * 0.2);
                 if(roleSel % 2 == 0 && roleSelNow == roleSel) {
                     roleSelNow++;
                     AllBegin();
@@ -103,8 +105,6 @@ public class CardUse : MonoBehaviour {
 
                 }                
             }
-
-
         }
     private void AllBegin() {
         foreach (var role in roleList)

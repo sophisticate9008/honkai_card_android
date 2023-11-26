@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -13,7 +14,6 @@ public class Hook
     public float num;
     private Roles cls;
     private string op;
-
     public Hook(string argName, string dependentArgName, float num, string op, Roles cls)
     {
         this.argName = argName;
@@ -34,13 +34,14 @@ public class Hook
 
 public class Roles
 {
-
+    public bool again = false;
     public bool all_fast_card = false;
     public Dictionary<string, float> temphook = new();
     private Dictionary<string, float> properties = new();
     public List<Cards> card_pack_instance = new();
     public List<string> track_list = new();
     public List<string> only_list = new();
+    public List<string> accumulateList = new();
     public string role_name = "";
     public bool respone_complete;
     public int role_index;
@@ -99,6 +100,7 @@ public class Roles
         InitializeProperty("recover_count", 0);
         InitializeProperty("life_change", 0);
         InitializeProperty("push_bleed", 0);
+        InitializeProperty("const_num", 1);
         this.role_name = role_name;
         this.process = process;
         process.role_list.Add(this);
@@ -357,11 +359,139 @@ public class Roles
         return attack;
 
     }
+    public void AccumulateAccelerate(int accelerateNum = 1, int effectNum = 1, bool noLimit = false, int min = 0) {
+        //max > now > attr_name_change > attr_name_accord > beilv > color > accu_num
+        List<string> removeList = new List<string>();
+        for (int idx = 0; idx < accumulateList.Count; idx++)
+        {
+            string i = accumulateList[idx];
+            string[] temp = i.Replace(" ", "").Split(">");
+            int countMax = int.Parse(temp[0]);
+            string attrName = temp[2];
+            string attrNameAccord = temp[3];
+            float beilv = float.Parse(temp[4]);
+            int num = (int)((int)this[attrNameAccord] * beilv);
+            int countNow = int.Parse(temp[1]);
+            string color = temp[5];
+            int accuNum = int.Parse(temp[6]);
+            if (min != 0)
+            {
+                countNow = min;
+            }
+            else
+            {
+                countNow -= (countNow < accelerateNum) ? countNow : accelerateNum;
+            }
 
+            if (countNow <= 0 || noLimit)
+            {
+                this[attrName] += num * accuNum;
+                if (!noLimit)
+                {
+                    if (!again)
+                    {
+                        removeList.Add(i);
+                    }
+                    else
+                    {
+                        string strNew = $"{countMax} > {countMax} > {attrName} > {attrNameAccord} > {beilv} > {color} > {accuNum}";
+                        accumulateList[idx] = strNew;
+                    }
+                }
+            }
+            else
+            {
+                string strNew = $"{countMax} > {countNow} > {attrName} > {attrNameAccord} > {beilv} > {color} > {accuNum}";
+                accumulateList[idx] = strNew;
+            }
+        }
 
+        foreach (var item in removeList)
+        {
+            accumulateList.Remove(item);
+        }
+    }
+    public int GetAccumulateNum()
+    {
+        int num = 0;
+        List<string> accumulateListCopy = new List<string>(accumulateList);
 
+        for (int idx = 0; idx < accumulateListCopy.Count; idx++)
+        {
+            string i = accumulateListCopy[idx];
+            string[] temp = i.Replace(" ", "").Split('>');
 
+            if (temp.Length > 4)
+            {
+                string color = temp[5];
+                if (color != "none")
+                {
+                    num++;
+                }
+            }
+        }
+
+        return num;
+    }    
+    public int GetAccumulateMin()
+    {
+        List<int> numList = new List<int>();
+
+        foreach (string i in accumulateList.ToList())
+        {
+            string[] temp = i.Replace(" ", "").Split('>');
+
+            if (temp.Length > 3 && int.TryParse(temp[3], out int countNow))
+            {
+                numList.Add(countNow);
+            }
+        }
+
+        if (numList.Count > 0)
+        {
+            return numList.Min();
+        }
+
+        // Return a default value if the list is empty
+        return 0;
+    }    
+    public void MergeAccumulate() {
+        accumulateList = MergeStrings(accumulateList);
+    }
+    public List<string> MergeStrings(List<string> strings)
+    {
+        var mergedDict = new Dictionary<string, float>();
+
+        foreach (var str in strings)
+        {
+            string[] parts;
+            string key;
+            float value;
+            if (str.Contains(">"))
+            {
+                parts = str.Split(new string[] { " > " }, StringSplitOptions.None);
+                key = string.Join(" > ", parts, 0, parts.Length - 1);
+                value = float.Parse(parts[^1], CultureInfo.InvariantCulture); // Parse as float
+                if (!mergedDict.TryAdd(key, value))
+                {
+                    mergedDict[key] += value;
+                }
+            }
+        }
+
+        var mergedStrings = new List<string>();
+        foreach (var kvp in mergedDict)
+        {
+            if (kvp.Key.Contains(">"))
+            {
+                mergedStrings.Add($"{kvp.Key} > {kvp.Value}");
+            }
+        }
+
+        return mergedStrings;
+    }    
 }
+
 
 
 public class Cards

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,6 +54,7 @@ public class Texture : MonoBehaviour
             temp.fontSize = size;
         }
     }
+
     public static string ColorizeText(string inputText)
     {
         string result = inputText;

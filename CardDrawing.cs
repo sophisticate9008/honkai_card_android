@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -66,7 +67,9 @@ public class CardDrawing : MonoBehaviour
         foreach(var card in cardInstance) {
             Renderer childRenderer = childCard[tem].GetComponent<Renderer>();
             Transform childCanvas = childCard[tem].GetChild(0);
-            Texture.AllSetFontsize(childCanvas, Screen.width / 908 * 9);
+            double result = (double)Screen.width / 908 * 9;
+            int roundedResult = (int)Math.Round(result);
+            Texture.AllSetFontsize(childCanvas, roundedResult);
             Transform[] canvasChild = Texture.GetChildObjects(childCanvas);
             Text nameText = canvasChild[0].GetComponent<Text>();
             Text desText = canvasChild[1].GetComponent<Text>();

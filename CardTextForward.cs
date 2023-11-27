@@ -51,4 +51,5 @@ public class CardTextForward : MonoBehaviour
     public static void BindTextForward(Transform obj) {
         objectToFollows.Add(obj);
     }
+    
 }

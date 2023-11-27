@@ -101,6 +101,7 @@ public class Roles
         InitializeProperty("life_change", 0);
         InitializeProperty("push_bleed", 0);
         InitializeProperty("const_num", 1);
+        InitializeProperty("attack_note", 0);
         this.role_name = role_name;
         this.process = process;
         process.role_list.Add(this);
@@ -133,6 +134,8 @@ public class Roles
     public string role_describe = "";
     public string log = "";
 
+    public bool return_note = false;
+
     public void TurnBegin() {
         var enemy = this.process.role_list[(this.role_index + 1) % 2];
         if (this["rampart"] <= 1 && this["turn_count"] != 1)
@@ -143,6 +146,8 @@ public class Roles
         enemy["bleed_count"] += 1;
         this["life_recover"] += this["heal"];
         this["turn_count"] += 1;
+        MergeAccumulate();
+        AccumulateAccelerate();
     }
     public void turnEnd() {
         var enemy = this.process.role_list[(this.role_index + 1) % 2];
@@ -214,9 +219,9 @@ public class Roles
             this["card_use_count"]++;
             for (int i = 0; i < this["effect_count_next"]; i++)
             {
-                this["effect_count_next"] = 1; // 这里是否应该是 1？
                 card_use.Use();
             }
+            this["effect_count_next"] = 1;
 
             if (card_use.odd && (card_use.index % 2 == 0 || this.no_limit))
             {
@@ -385,7 +390,7 @@ public class Roles
 
             if (countNow <= 0 || noLimit)
             {
-                this[attrName] += num * accuNum;
+                this[attrName] += num * accuNum * effectNum;
                 if (!noLimit)
                 {
                     if (!again)
@@ -441,7 +446,7 @@ public class Roles
         {
             string[] temp = i.Replace(" ", "").Split('>');
 
-            if (temp.Length > 3 && int.TryParse(temp[3], out int countNow))
+            if (temp.Length > 3 && int.TryParse(temp[1], out int countNow))
             {
                 numList.Add(countNow);
             }
@@ -489,7 +494,7 @@ public class Roles
         }
 
         return mergedStrings;
-    }    
+    }
 }
 
 
@@ -1139,7 +1144,310 @@ public class Cards
 
             };
             this.use = use;  
-        }      
+        }   
+        color = "红";
+        if(card_name == "鏖战.蓄力") {
+            this.color = color;
+
+            if (level != 1)
+            {
+                describe = $"积蓄(20): {-50 + level * 50}伤害";
+            }
+            describe += $"魔阵:积蓄效果触发后将再次开始倒计时";
+            this.broken = true;
+            Action use = () => {
+                role.again = true;
+                if(level != 1) {
+                    role["role.card_accumulate"] += 1;
+                    role.accumulateList.Add($"20 > 20 > attack > const_num > {-50 + level * 50} > #FF0000 > 1");
+                    role.accumulateList.Add($"20 > 20 > attack_count > const_num > 1 > none > 1");
+                }
+            };    
+            this.use = use;      
+        }
+        if(card_name == "乐符狂热") {
+            this.color = color;
+            describe = $"乐符+{5 + 5 * level} 积蓄(5)获得等于乐符数量{0.5 + 0.5 * level}倍的力量";
+            Action use = () => {
+                role["role.card_accumulate"] += 1;
+                role["note"] += 5 + 5 * level;
+                role.accumulateList.Add($"5 > 5 > power > note > {0.5 + 0.5 * level} > #B2381E > 1");
+            };    
+            this.use = use;         
+        }
+        if(card_name == "音律强击") {
+            this.color = color;
+            describe = $"{5 + 5 * level} 受{5 + 5 * level}倍乐符与力量加成";
+            Action use = () => {
+                role["attack"] += 5 + 5 * level;
+                role["attack"] += (role["note"] + role["power"]) * (4 + 5 * level);
+                role["attack_count"] += 1;
+                role["attack_note"] += 1;
+            };
+            this.use = use; 
+        }
+        color = "金";
+        if(card_name == "争锋.蓄力") {
+            this.color = color;
+            describe = $"触发{1 + level}次场上的积蓄效果 迅捷";
+            fast_card = true;
+            Action use = () => {
+                role.AccumulateAccelerate(accelerateNum:0, effectNum:1 + level, noLimit:true);
+            };    
+            this.use = use;         
+        }
+        if(card_name == "交续之时") {
+            this.color = color;
+            describe = $"生命+{(level == 1 ? 0 : 6)} 下一张牌连续生效{(level == 3 ? 3 : 2)}";
+            Action use = () => {
+                role["effect_count_next"] = (level == 3) ? 3 : 2;
+            };       
+            this.use = use;      
+        }
+        if(card_name == "奇攻.贮力") {
+            this.color = color;
+            if (level == 1) {
+                role["mana"] = 2;
+            }
+            describe = $"复制{(level == 3 ? 2 : 1)}份场上的积蓄效果";
+            Action use = () => {
+                int num = (level == 3) ? 2 : 1;
+                List<string> backup = new List<string>(role.accumulateList);
+                for (int i = 0; i < num; i++)
+                {
+                    role.accumulateList.AddRange(backup);
+                }                
+            };  
+            this.use = use;      
+        }
+        if(card_name == "闪攻.贮力") {
+            this.color = color;
+            describe = $"积蓄(10): {20 + 5 * level}伤害";
+            Action use = () => {
+                role["card_accumulate"] += 1;
+                role.accumulateList.Add($"10 > 10 > attack > const_num > {20 + 5 * level} > #FFD700 > 1");
+                role.accumulateList.Add($"10 > 10 > attack_count > const_num > 1 > none > 1");
+            };      
+            this.use = use;       
+        }
+        if(card_name == "速攻.贮力") {
+            this.color = color;
+            mana = 1;
+            describe = $"加速{2 * level}次,由该卡触发的积蓄效果生效{1 + level}次";
+            Action use = () => {
+                role.AccumulateAccelerate(accelerateNum: 2 * level, effectNum: 1 + level);
+            };       
+            this.use = use;      
+        }
+        if(card_name == "乐符积蓄") {
+            this.color = color;
+            describe = $"积蓄(5):乐符+{15 + 5 * level}";
+            Action use = () => {
+                role["card_accumulate"] += 1;
+                role.accumulateList.Add($"5 > 5 > note > const_num > {15 + 5 * level} > #A1BEDC > 1");
+            };      
+            this.use = use;       
+        }
+        if(card_name == "额外音符") {
+            this.color = color;
+            describe = $"魔阵:每回合乐符+{2 + level}";
+            broken = true;
+            Action use = () => {
+                new Hook("turn_count", "note",  2 + level, "+", role);
+            };     
+            this.use = use;        
+        }
+        if(card_name == "回梦旋律") {
+            this.color = color;
+            describe = $"法力+{-1 + level * 2} 移除对方的护盾 迅捷";
+            fast_card = true;
+            Action use = () => {
+                role["mana"] += -1 + level * 2;
+                var enemy = role.process.role_list[(role.role_index + 1) % 2];
+                enemy["shield"] = 0;
+            };     
+            this.use = use;       
+        }
+        if(card_name == "捷速谐乐") {
+            this.color = color;
+            mana = 3;
+            describe = $"3伤害 * {4 + level}";
+            Action use = () => {
+                role["attack"] += 3 * (4 + level);
+                role["attack_count"] += 4 + level;
+                role["attack_note"] += 4 + level;
+            };     
+            this.use = use;        
+        }
+        if(card_name == "魔文乐谱") {
+            this.color = color;
+            mana = 1;
+            describe = $"现有乐符数量增加{75 + 25 * level}%";
+            Action use = () => {
+                role["note"] += (int)(role["note"] * (75 + 25 * level) / 100);
+            };       
+            this.use = use;      
+        }
+        color = "紫";
+        if(card_name == "激决.蓄力") {
+            this.color = color;
+            describe = $"场上每有一个积蓄效果, 获得{1 + level}层力量";
+            Action use = () => {
+                role["power"] += role.GetAccumulateNum() * (1 + level);
+            };       
+            this.use = use;      
+        }
+        if(card_name == "搏战.集力") {
+            this.color = color;
+            describe = $"法力+{-2 + level * 2}场上所有积蓄倒计时变为其中最小值 迅捷";
+            fast_card = true;
+            Action use = () => {
+                if (role.GetAccumulateNum() > 0) {
+                    int min = role.GetAccumulateMin();
+                    role.AccumulateAccelerate(effectNum:0, min:min);                       
+                }
+            };     
+            this.use = use;        
+        }
+        if(card_name == "破袭.集力") {
+            this.color = color;
+            describe = $"积蓄(8):{15 + 5 * level}";
+            Action use = () => {
+                role["card_accumulate"] += 1;
+                role.accumulateList.Add($"8 > 8 > attack > const_num > {15 + 5 * level} > #AF6EF0 > 1");
+            }; 
+            this.use = use;            
+        }
+        if(card_name == "威势.集力") {
+            this.color = color;
+            describe = $"法力+{3 + level} 积蓄(7):生命+{2 + level * 3}";
+            Action use = () => {
+                role["mana"] += 3 + level;
+                role["card_accumulate"] += 1;
+                role.accumulateList.Add($"7 > 7 > life_recover > const_num > {2 + level * 3} > #008000 > 1");
+            };     
+            this.use = use;        
+        }
+        if(card_name == "瞬袭.集力") {
+            this.color = color;
+            mana = 2;
+            describe = $"场上如果有2个及以上积蓄倒计时则造成{25 + level * 5}伤害";
+            Action use = () => {
+                if (role.GetAccumulateNum() >= 2) {
+                    role["attack"] += 25 + level * 5;
+                    role["attack_count"] += 1;
+                    role["attack_note"] += 1;
+                }
+            };     
+            this.use = use;        
+        }
+        if(card_name == "突袭.集力") {
+            this.color = color;
+            describe = $"回复等同于场上积蓄数量{4 + level}倍的生命";
+            Action use = () => {
+                role["life_recover"] += role.GetAccumulateNum() * (4 + level);
+            };     
+            this.use = use;        
+        }
+        if(card_name == "延时乐曲") {
+            this.color = color;
+            describe = $"乐符+{1 + 2 * level} 积蓄(5): 1伤害 * {4 + level}";
+            Action use = () => {
+                role["card_accumulate"] += 1;
+                role["note"] += 1 + 2 * level;
+                role.accumulateList.Add($"5 > 5 > attack > const_num > {4 + level} > #AF6EF0 > 1");
+                role.accumulateList.Add($"5 > 5 > attack_count > const_num > {4 + level} > none > 1");
+            };  
+            this.use = use;           
+        }
+        if(card_name == "音符预演") {
+            this.color = color;
+            describe = $"乐符+{1 + 2 * level}下一次攻击后返还乐符";
+            Action use = () => {
+                role["note"] += 1 + 2 * level;
+                role.return_note = true;
+            };   
+            this.use = use;          
+        }
+        if(card_name == "肆意.小调") {
+            this.color = color;
+            describe = $"法力+{(level == 3 ? 4 : 2)} 魔阵:每{(level == 1 ? 2 : 1)}回合加1法力";
+            broken = true;
+            Action use = () => {
+                role["mana"] += level == 3 ? 4 : 2;
+                new Hook("turn_count", "mana", (float)(level == 1 ? 0.5 : 1), "+", role);
+            };    
+            this.use = use;         
+        }
+        if(card_name == "安神.小调") {
+            this.color = color;
+            mana = 2;
+            describe = $"{7 + 5 * level}伤害 对方法力-2";
+            Action use = () => {
+                var enemy = role.process.role_list[(role.role_index + 1) % 2];
+                role["attack"] += 7 + 5 * level;
+                enemy["mana"] -= 2;
+                role["attack_count"] += 1;
+                role["attack_note"] += 1;
+            };       
+            this.use = use;      
+        }
+        if(card_name == "甜美.小调") {
+            this.color = color;
+            broken = true;
+            describe = $"魔阵:每获得一枚乐符加{level}护盾";
+            Action use = () => {
+                new Hook("note","shield", level * 30, "+", role);
+            };      
+            this.use = use;       
+        }
+        if(card_name == "四重.小调") {
+            this.color = color;
+            mana = 2;
+            describe = $"2伤害*{3 + level}";
+            Action use = () => {
+                role["attack"] += 2 * (3 + level);
+                role["attack_count"] += 3 + level;
+                role["attack_note"] += 3 + level;
+            };     
+            this.use = use;
+        }
+        if(card_name == "激昂.小调") {
+            this.color = color;
+            describe = $"护盾+{4 + 4 * level} 获得等同于法力的乐符 至多{4 + 4 * level}";
+            Action use = () => {
+                role["shield"] += (4 + 4 * level) * 30;
+                role["note"] += (4 + 4 * level) < role["mana"] ? (4 + 4 * level) : role["mana"];
+            };    
+            this.use = use;         
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
     }
 
 }

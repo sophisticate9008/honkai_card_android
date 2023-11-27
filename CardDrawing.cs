@@ -23,7 +23,7 @@ public class CardDrawing : MonoBehaviour
     public List<string> packSel;
     private void Start() {
         floatWindow = GameObject.Find(cardParent).GetComponent<Transform>();
-        int tempNum = random.Next(0,4);
+        int tempNum = random.Next(0,6);
         if(tempNum == 0) {
             GameProcess.roleSelList.Add("西琳");
             packSel = GameProcess.starAndLuck;
@@ -36,11 +36,16 @@ public class CardDrawing : MonoBehaviour
         }else if(tempNum == 3) {
             GameProcess.roleSelList.Add("布洛洛");
             packSel = GameProcess.lightAndNight;                  
+        }else if(tempNum == 4) {
+            GameProcess.roleSelList.Add("学园长");
+            packSel = GameProcess.songAndLight;              
+        }else if(tempNum == 5) {
+            GameProcess.roleSelList.Add("绮罗老师");
+            packSel = GameProcess.songAndLight;             
         }
         DrawingCard();
     }
     public void DrawingCard() {
-        
         
         cardPack = GameProcess.ChooseRandomElements(packSel, cardNum);
         if(GameProcess.cardPacks.Count > cardPackSel && GameProcess.cardPacks[cardPackSel] != null) {

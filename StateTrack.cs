@@ -161,8 +161,19 @@ public class StateTrack : MonoBehaviour
                 var enemy = role.process.role_list[(role.role_index + 1) % 2];
             
                 role["harm"] += role["attack"] * 30;
-                role["harm"] += role["attack_count"] * ((int)role["power"] + role["note"]) * 30;
+                role["harm"] += role["attack_count"] * ((int)role["power"]) * 30;
+                role["harm"] += role["attack_note"] * (int)role["note"] * 30;
+                if(role.return_note) {
+                    float noteBackup = role["note"];
+                    role["note"] = 0;
+                    role["note"] += noteBackup;
+                    role.return_note = false;
+                }else {
+                    role["note"] = 0;
+                }
+
                 role["attack"] = 0;
+                role["attack_note"] = 0;
                 if (role["weak"] > 0)
                 {
                     role["harm"] *= 0.6f;

@@ -10,10 +10,11 @@ public class CardUse : MonoBehaviour {
     private Roles secondRole;
     public Text state1;
     public Text state2;
+    private CreateAccumulate createAccumulate;
     private GameObject foundObject;
     private GameObject foundObject1;
     private CardAnimation targetScript;
-        private CardAnimation targetScript1;
+    private CardAnimation targetScript1;
     private int roleSel = 0;
     private int roleSelNow = 0;
     public Material purple; 
@@ -22,6 +23,7 @@ public class CardUse : MonoBehaviour {
     private  Cards cardNow;
     private  Cards cardNext;
     private Renderer childRenderer; 
+    
     private Roles[] roleList = new Roles[2];
     private Renderer childRenderer1; 
     private void Start() {
@@ -29,16 +31,19 @@ public class CardUse : MonoBehaviour {
         secondRole = GameProcess.Instance.role_list[1];
         roleList[0] = firstRole;
         roleList[1] = secondRole;
+        createAccumulate = GameObject.Find("CreatePrefabs").GetComponent<CreateAccumulate>();
     }
     
         private void Update() {
             
-            if(!isGameOver) {
-                Time.timeScale = (float)(1 + (int)roleList[0]["turn_count"] / 8 * 0.2);
+            if(!isGameOver && Time.timeScale != 0) {
+                Time.timeScale = (float)(1 + (int)roleList[0]["turn_count"] / 8 * 0.1);
                 if(roleSel % 2 == 0 && roleSelNow == roleSel) {
                     roleSelNow++;
                     AllBegin();
+                    createAccumulate.CopyPrefab();
                     firstRole.TurnBegin();
+                    createAccumulate.CopyPrefab();
                     ShowStates();
                     cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
                     cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
@@ -71,7 +76,9 @@ public class CardUse : MonoBehaviour {
 
                 }else if(roleSel % 2 == 1 && roleSelNow == roleSel) {
                     roleSelNow++;
+                    createAccumulate.CopyPrefab();
                     secondRole.TurnBegin();
+                    createAccumulate.CopyPrefab();
                     ShowStates();
                     cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
                     cardNext = secondRole.card_pack_instance[((int)secondRole["card_use_index"] + 1) % secondRole.card_pack_instance.Count];

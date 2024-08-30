@@ -48,6 +48,7 @@ public class Roles
     public bool harm_to_life_next = false;
     public GameProcess process = new();
     public List<Cards> card_pack_instance_backup = new();
+    public static int life_init = 1000000;
     public static Dictionary<string, string> name_args = new()
     {
         { "shield", "护盾" },
@@ -61,12 +62,13 @@ public class Roles
         { "note", "乐符" }
     };  
     public Roles() {}
+    
     public Roles(string role_name, List<string> card_pack, GameProcess process)
     {
         InitializeProperty("coin_", 0);
         // 在构造函数中初始化属性
-        InitializeProperty("life_max", 100000);
-        InitializeProperty("life_now", 100000);
+        InitializeProperty("life_max", life_init);
+        InitializeProperty("life_now", life_init);
         InitializeProperty("life_recover", 0);
         InitializeProperty("shield", 0);
         InitializeProperty("power", 0);

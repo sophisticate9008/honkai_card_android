@@ -38,7 +38,7 @@ public class CardTextForward : MonoBehaviour
                     Text uiText = canvasObj.GetChild(i).GetComponent<Text>();
                     uiText.rectTransform.position = screenPos + offsets[i];
                     // 设置UI Text的尺寸，可根据需要自定义
-                    uiText.rectTransform.sizeDelta = new Vector2(Mathf.RoundToInt((float)screenWidth / 908 * 70), Mathf.RoundToInt((float)screenHeight / 511 * 90));
+                    uiText.rectTransform.sizeDelta = new Vector2(Mathf.RoundToInt((float)screenWidth / 908 * 70) - 30, Mathf.RoundToInt((float)screenHeight / 511 * 90) );
                     // 调整尺寸以适应你的需求                
                 }
             }

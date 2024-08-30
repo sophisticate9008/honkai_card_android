@@ -9,8 +9,15 @@ public class GameManager : MonoBehaviour
 {
     public GameObject pausePanel; // 引用暂停面板
     public int sel;
+    Text playerName1;
+    Text playerName2;
     private void Start() {
-        
+        if(BeginSel.modeSel == "onLine") {
+            playerName1 = GameObject.Find("PlayerName1").GetComponent<Text>();
+            playerName2 = GameObject.Find("PlayerName2").GetComponent<Text>();
+            playerName1.text = PlayerPrefs.GetString("playerName");
+            playerName2.text = Data.enemyName;
+        }
         try {
             if(sel == 0) {
                 GetComponent<Button>().onClick.AddListener(ResumeGame);
@@ -45,6 +52,7 @@ public class GameManager : MonoBehaviour
         pausePanel.SetActive(false); // 隐藏暂停面板
     }
     public void RestartGame() {
+        Time.timeScale = 1f;
         GameEnd.EndGame();
     }
 }

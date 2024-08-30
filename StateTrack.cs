@@ -62,6 +62,10 @@ public class StateTrack : MonoBehaviour
     {
         foreach (var role in roleList)
         {
+            if(role.log != "") {
+                ShowScrollingText(role, role.log, "#499ACD");
+                role.log = "";
+            }
             if (role["life_recover"] > 0)
             {
                 role["life_change"] += 1;
@@ -71,10 +75,7 @@ public class StateTrack : MonoBehaviour
                 role["life_max"] += temp;
                 role["life_recover"] = 0;
                 ShowScrollingText(role, ((int)temp).ToString(), "green");
-                if(role.log != "") {
-                    ShowScrollingText(role, role.log, "#499ACD");
-                    role.log = "";
-                }
+
             }
         }
         yield return null;
@@ -163,12 +164,12 @@ public class StateTrack : MonoBehaviour
                 role["harm"] += role["attack"] * 30;
                 role["harm"] += role["attack_count"] * ((int)role["power"]) * 30;
                 role["harm"] += role["attack_note"] * (int)role["note"] * 30;
-                if(role.return_note) {
+                if(role.return_note && role["attack_note"] > 0) {
                     float noteBackup = role["note"];
                     role["note"] = 0;
                     role["note"] += noteBackup;
                     role.return_note = false;
-                }else {
+                }else if(role["attack_note"] > 0){
                     role["note"] = 0;
                 }
 

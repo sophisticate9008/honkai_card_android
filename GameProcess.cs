@@ -217,11 +217,13 @@ public class Roles
             tempCount += 1;
             this["mana"] -= card_use.mana;
             this["card_use_count"]++;
-            for (int i = 0; i < this["effect_count_next"]; i++)
+            float effect_count_next = this["effect_count_next"];
+            for (int i = 0; i < effect_count_next; i++)
             {
+                this["effect_count_next"] = 1;
                 card_use.Use();
             }
-            this["effect_count_next"] = 1;
+            
 
             if (card_use.odd && (card_use.index % 2 == 0 || this.no_limit))
             {
@@ -431,7 +433,7 @@ public class Roles
                 string color = temp[5];
                 if (color != "none")
                 {
-                    num++;
+                    num += int.Parse(temp[6]);
                 }
             }
         }
@@ -604,6 +606,8 @@ public class Cards
             Action use = () => {
                 role["attack"] += 10 + level * 5;
                 int result = role.throw_coin(role["coin"]);
+                role["attack"] += result;
+                role["attack_count"] += 1;
             };
             this.use = use;  
         }
@@ -1158,7 +1162,7 @@ public class Cards
             Action use = () => {
                 role.again = true;
                 if(level != 1) {
-                    role["role.card_accumulate"] += 1;
+                    role["card_accumulate"] += 1;
                     role.accumulateList.Add($"20 > 20 > attack > const_num > {-50 + level * 50} > #FF0000 > 1");
                     role.accumulateList.Add($"20 > 20 > attack_count > const_num > 1 > none > 1");
                 }
@@ -1169,7 +1173,7 @@ public class Cards
             this.color = color;
             describe = $"乐符+{5 + 5 * level} 积蓄(5)获得等于乐符数量{0.5 + 0.5 * level}倍的力量";
             Action use = () => {
-                role["role.card_accumulate"] += 1;
+                role["card_accumulate"] += 1;
                 role["note"] += 5 + 5 * level;
                 role.accumulateList.Add($"5 > 5 > power > note > {0.5 + 0.5 * level} > #B2381E > 1");
             };    
@@ -1517,11 +1521,18 @@ public class GameProcess : MonoBehaviour
         // 单例初始化的逻辑，包括创建 card_pack1 和 card_pack2
 
         // 创建 Roles 实例
+        if (BeginSel.modeSel == "offLine") {
+            Roles role1 = new Roles(roleSelList[0], cardPacks[1], this);
+            Roles role2 = new Roles(roleSelList[1], cardPacks[0], this);
+            role1.RoleLoad();
+            role2.RoleLoad();            
+        }else {
+            Roles role1 = new Roles(roleSelList[0], cardPacks[0], this);
+            Roles role2 = new Roles(roleSelList[1], cardPacks[1], this);
+            role1.RoleLoad();
+            role2.RoleLoad();             
+        }
 
-        Roles role1 = new Roles(roleSelList[1], cardPacks[1], this);
-        Roles role2 = new Roles(roleSelList[0], cardPacks[0], this);
-        role1.RoleLoad();
-        role2.RoleLoad();
     }
 
     public static List<T> ChooseRandomElements<T>(List<T> objects, int k)

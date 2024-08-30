@@ -41,7 +41,7 @@ public class CardDrawing : MonoBehaviour
             packSel = GameProcess.songAndLight;              
         }else if(tempNum == 5) {
             GameProcess.roleSelList.Add("绮罗老师");
-            packSel = GameProcess.songAndLight;             
+            packSel = GameProcess.songAndLight;
         }
         DrawingCard();
     }

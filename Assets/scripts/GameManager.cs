@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f; // 暂停游戏时间流逝
         pausePanel.SetActive(true); // 显示暂停面板
+        
     }
 
     public void ResumeGame()

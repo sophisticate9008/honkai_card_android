@@ -15,18 +15,32 @@ public class BeginGame : MonoBehaviour
     {
         cardSlot = GameObject.Find("CardSlot").GetComponent<CardSlot>();
     }
-    private void Start() {
-        
-        if(BeginSel.modeSel == "onLine") {
-            GetComponent<Button>().onClick.AddListener(GameMatch);
-        }else {
-            GetComponent<Button>().onClick.AddListener(GameBegin);
-        }
-        
+    private void Start()
+    {
+        GetComponent<Button>().onClick.AddListener(GameBegin);
     }
     private void GameBegin()
     {
 
+        if (cardSlot.cardsInSlot.Count != 8)
+        {
+            return;
+        }
+
+        if (BeginSel.modeSel == "offLine")
+        {
+            SortCard(1);
+            Roles.life_init = PlayerPrefs.GetInt("bloodCustom");
+            SceneManager.LoadScene("GameProcess");
+        }
+        else
+        {
+            SortCard(1);
+            GameMatch();
+        }
+    }
+    private void SortCard(int cardPackIdx)
+    {
         if (cardSlot.cardsInSlot.Count != 8)
         {
             return;
@@ -39,30 +53,28 @@ public class BeginGame : MonoBehaviour
             int lastInt = (int)Char.GetNumericValue(lastChar); // 将最后一个字符转换为整数
             order.Add(lastInt);
         }
-        Debug.Log(order);        
-            // 使用OrderBy对字符串列表进行排序
+
+        // 使用OrderBy对字符串列表进行排序
         List<string> sortedList = new();
-        foreach (var idx in order) {
-            sortedList.Add(GameProcess.cardPacks[1][idx]);
+        foreach (var idx in order)
+        {
+            sortedList.Add(GameProcess.cardPacks[cardPackIdx][idx]);
         }
         // 用排序后的列表替换原始列表
-        GameProcess.cardPacks[1] = sortedList;
-        if(BeginSel.modeSel == "offLine") {
-            Roles.life_init = PlayerPrefs.GetInt("bloodCustom");
-            SceneManager.LoadScene("GameProcess");  
-        }else {
-            GameMatch();
-        }
+        GameProcess.cardPacks[cardPackIdx] = sortedList;
     }
-    private string CardsToString() {
+    private string CardsToString()
+    {
         string strCards = "";
-        foreach (var cardStr in GameProcess.cardPacks[1]) {
+        foreach (var cardStr in GameProcess.cardPacks[1])
+        {
             strCards += cardStr;
             strCards += ";";
         }
         return strCards;
     }
-    private string NicknameCat() {
+    private string NicknameCat()
+    {
         string playerName = PlayerPrefs.GetString("playerName");
         string roleName = GameProcess.roleSelList[0];
         return playerName + ";" + roleName;
@@ -78,19 +90,17 @@ public class BeginGame : MonoBehaviour
         GameProcess.roleSelList[1] = names[1];
         SceneManager.LoadScene("GameProcess");
     };
-    private void GameMatch() {
+    private void GameMatch()
+    {
 
         string url = "https://honkai-card-honkai-card-rhbdvhegec.cn-hangzhou.fcapp.run/game_match";
-        
+
         //先请求一下激活云函数
-        StartCoroutine(requestManager.SendPostRequest(url, "",
-            (response) => Debug.Log("POST Success: " + response), 
-            (error) => Debug.LogError("POST Error: " + error)));
-        
+
         MyData myData = new MyData
         {
-           nickname = NicknameCat(),
-           card_str = CardsToString()
+            nickname = NicknameCat(),
+            card_str = CardsToString()
         };
         string jsonData = JsonUtility.ToJson(myData);
         Debug.Log(jsonData);

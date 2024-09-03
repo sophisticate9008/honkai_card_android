@@ -60,8 +60,9 @@ public class WebRequestManager : MonoBehaviour
                 try
                 {
                     string responseJson = webRequest.downloadHandler.text;
-                    Debug.Log(responseJson);
+                    
                     MyData data = JsonUtility.FromJson<MyData>(responseJson);
+                    Debug.Log(data.card_str);
                     onSuccess?.Invoke(data);
                 }
                 catch (System.Exception e)

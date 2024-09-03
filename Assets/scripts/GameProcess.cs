@@ -1529,8 +1529,8 @@ public class GameProcess : MonoBehaviour
             role1.RoleLoad();
             role2.RoleLoad();            
         }else {
-            Roles role1 = new Roles(roleSelList[0], cardPacks[0], this);
-            Roles role2 = new Roles(roleSelList[1], cardPacks[1], this);
+            Roles role1 = new Roles(roleSelList[0], cardPacks[1], this);
+            Roles role2 = new Roles(roleSelList[1], cardPacks[0], this);
             role1.RoleLoad();
             role2.RoleLoad();             
         }

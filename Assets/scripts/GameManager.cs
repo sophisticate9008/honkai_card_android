@@ -13,10 +13,15 @@ public class GameManager : MonoBehaviour
     Text playerName2;
     private void Start() {
         if(BeginSel.modeSel == "onLine") {
-            playerName1 = GameObject.Find("PlayerName1").GetComponent<Text>();
-            playerName2 = GameObject.Find("PlayerName2").GetComponent<Text>();
-            playerName1.text = PlayerPrefs.GetString("playerName");
-            playerName2.text = Data.enemyName;
+            try {
+                playerName1 = GameObject.Find("PlayerName1").GetComponent<Text>();
+                playerName2 = GameObject.Find("PlayerName2").GetComponent<Text>();
+                playerName1.text = PlayerPrefs.GetString("playerName");
+                playerName2.text = Data.enemyName;                
+            }catch(Exception e) {
+                Debug.Log(e);
+            }
+
         }
         try {
             if(sel == 0) {

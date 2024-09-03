@@ -46,6 +46,7 @@ public class CardUse : MonoBehaviour {
                     createAccumulate.CopyPrefab();
                     ShowStates();
                     cardNow = firstRole.card_pack_instance[(int)firstRole["card_use_index"]];
+                    Debug.Log("cardSelf" + cardNow.card_name);
                     cardNext = firstRole.card_pack_instance[((int)firstRole["card_use_index"] + 1) % firstRole.card_pack_instance.Count];
                     foundObject = GameObject.Find($"card_self_0{cardNow.index}");                
                     foundObject1 = GameObject.Find($"card_self_0{cardNext.index}");
@@ -81,6 +82,7 @@ public class CardUse : MonoBehaviour {
                     createAccumulate.CopyPrefab();
                     ShowStates();
                     cardNow = secondRole.card_pack_instance[(int)secondRole["card_use_index"]];
+                    Debug.Log("cardEnemy" + cardNow.card_name);
                     cardNext = secondRole.card_pack_instance[((int)secondRole["card_use_index"] + 1) % secondRole.card_pack_instance.Count];
                     foundObject = GameObject.Find($"card_enemy_0{cardNow.index}");                
                     foundObject1 = GameObject.Find($"card_enemy_0{cardNext.index}");
